@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Polymath Companion</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>Polymath Companion</h1>
+  <button id="addTopicBtn" type="button">Add Topic</button>
+
+<div id="addTopicForm" style="display:none; margin-top:20px;">
+  <input id="topicTitleInput" placeholder="Topic title" />
+
+  <br><br>
+
+  <div>
+    <label>Intervals (days)</label>
+    <div id="intervalChips" style="margin-top:8px;"></div>
+    <input id="intervalNumberInput" type="number" placeholder="Add interval and press Enter" />
+  </div>
+
+  <br><br>
+
+  <button id="saveTopicBtn" type="button">Save</button>
+</div>
+
+<h3>Topics</h3>
+<ul id="topicList"></ul>
+
+
+<h3>Topics</h3>
+<ul id="topicList"></ul>
+
+  <div id="app">
+    <!-- calendar & content will go here -->
+  </div>
+
+<h3>Calendar</h3>
+
+<div id="calendar">
+  <div id="calendarHeader">
+  <button id="prevMonthBtn" type="button">◀</button>
+  <span id="calendarTitle"></span>
+  <button id="nextMonthBtn" type="button">▶</button>
+  </div>
+  <div id="calendarGrid"></div>
+</div>
+
+<h3 id="selectedDateHeader"></h3>
+<ul id="selectedDateTopics"></ul>
+
+  <script src="app.js"></script>
+</body>
+</html>
