@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Polymath Companion</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -11,6 +12,7 @@
   <button id="addTopicBtn" type="button">Add Topic</button>
 
 <div id="addTopicForm" style="display:none; margin-top:20px;">
+
   <input id="topicTitleInput" placeholder="Topic title" />
 
   <br><br>
@@ -18,28 +20,51 @@
   <div>
     <label>Intervals (days)</label>
     <div id="intervalChips" style="margin-top:8px;"></div>
-    <input id="intervalNumberInput" type="number" placeholder="Add interval and press Enter" />
+    <input id="intervalNumberInput" type="number" placeholder="Add interval (days)" />
+      <button id="addIntervalBtn" type="button">Add</button>
+
   </div>
 
   <br><br>
 
+  <label>
+  Domain:
+  <input id="topicDomainInput" type="text" list="domainSuggestions" />
+</label>
+
+<datalist id="domainSuggestions"></datalist>
+
+<label>
+  Start Date:
+  <input id="topicStartDateInput" type="date" />
+</label>
+
+<label>
+  Notes:
+  <textarea id="topicNotesInput" rows="3"></textarea>
+</label>
+
+
+<div class="form-actions">
   <button id="saveTopicBtn" type="button">Save</button>
+  <button id="cancelAddTopicBtn" type="button" class="secondary">Cancel</button>
 </div>
 
-<h3>Topics</h3>
-<ul id="topicList"></ul>
+</div>
 
 
 <h3>Topics</h3>
-<ul id="topicList"></ul>
 
-  <div id="app">
+  <div id="app" class="section">
     <!-- calendar & content will go here -->
   </div>
 
+<h3>Overview</h3>
+<ul id="dashboard"></ul>
+
 <h3>Calendar</h3>
 
-<div id="calendar">
+<div id="calendar" class="section">
   <div id="calendarHeader">
   <button id="prevMonthBtn" type="button">◀</button>
   <span id="calendarTitle"></span>
@@ -50,6 +75,42 @@
 
 <h3 id="selectedDateHeader"></h3>
 <ul id="selectedDateTopics"></ul>
+
+<h3>Library</h3>
+
+<div id="libraryControls" class="section library-controls">
+  <select id="domainFilter">
+    <option value="">All domains</option>
+  </select>
+
+  <select id="sortBy">
+    <option value="title">Sort by Title</option>
+    <option value="startDate">Sort by Start Date</option>
+  </select>
+</div>
+
+<ul id="libraryList"></ul>
+ 
+<h3>Import / Export</h3>
+
+<button id="exportBtn" type="button">Export JSON</button>
+<input type="file" id="importInput" accept=".json" />
+
+<h3>Settings</h3>
+
+<div id="settingsPanel" class="section">
+  <label>
+    Default Intervals (comma separated):
+    <input id="defaultIntervalsInput" type="text" />
+  </label>
+
+  <label>
+    Default Domain:
+    <input id="defaultDomainInput" type="text" />
+  </label>
+
+  <button id="saveSettingsBtn" type="button">Save Settings</button>
+</div>
 
   <script src="app.js"></script>
 </body>
