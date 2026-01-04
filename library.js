@@ -48,6 +48,44 @@ function renderLibrary() {
     filtered = filtered.filter(t => t.domain === domainFilter);
   }
 
+  function getSearchText(topic) {
+  return [
+    topic.title,
+    topic.domain,
+    topic.notes
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+}
+
+const status =
+  document.querySelector('input[name="status"]:checked')?.value??"active";
+
+  if (status === "active") {
+  filtered = filtered.filter(t => !isTopicCompleted(t));
+}
+
+if (status === "completed") {
+  filtered = filtered.filter(t => isTopicCompleted(t));
+}
+
+
+const searchValue = document.getElementById("librarySearchInput").value.trim().toLowerCase();
+
+    if (searchValue) {
+  filtered = filtered.filter(topic =>
+    getSearchText(topic).includes(searchValue)
+  );
+}
+if (filtered.length === 0) {
+  list.innerHTML = "<li>No matching topics</li>";
+  return;
+}
+
+
+
+
   // ---------- SORT ----------
   if (sortBy === "title") {
     filtered.sort((a, b) => a.title.localeCompare(b.title));
@@ -155,3 +193,4 @@ function renderLibrary() {
     list.appendChild(li);
   });
 }
+  

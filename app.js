@@ -6,9 +6,6 @@ function showView(viewName) {
   document.getElementById(`view-${viewName}`).style.display = "block";
 }
 
-function applyTheme() {
-  document.body.dataset.theme = settings.theme || "light";
-}
 
 
 /*************************************************

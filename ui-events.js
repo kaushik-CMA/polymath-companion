@@ -185,18 +185,18 @@ document.getElementById("saveSettingsBtn")
     alert("Settings saved.");
   });
 
+  //navigation bar
   document.getElementById("mainNav").addEventListener("click", e => {
   if (e.target.tagName !== "BUTTON") return;
   showView(e.target.dataset.view);
 });
 
 //
-const themeToggle = document.getElementById("themeToggle");
 
-themeToggle.checked = settings.theme === "dark";
+    document.getElementById("librarySearchInput").addEventListener("input", renderLibrary);
 
-themeToggle.addEventListener("change", () => {
-  settings.theme = themeToggle.checked ? "dark" : "light";
-  localStorage.setItem("settings", JSON.stringify(settings));
-  applyTheme();
-});
+    document
+  .querySelectorAll('input[name="status"]')
+  .forEach(radio => {
+    radio.addEventListener("change", renderLibrary);
+  });

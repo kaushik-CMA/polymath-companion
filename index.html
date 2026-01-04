@@ -15,18 +15,20 @@
   <button data-view="library">Library</button>
   <button data-view="settings">Settings</button>
 </nav>
-
+<div class="container">
   <section id="view-dashboard"><h1>Polymath Companion</h1>
+    <div class="subtitle"><i> A quiet place to stay in touch with ideas that matter - over time :)</i></div>
+    <br><br>
   <button id="addTopicBtn" type="button">Add Topic</button>
 
   <div id="addTopicForm" style="display:none; margin-top:20px;">
 
-    <input id="topicTitleInput" placeholder="Topic title" />
+    <input id="topicTitleInput" placeholder="Topic title *" />
 
     <br><br>
 
     <div>
-      <label>Intervals (days)</label>
+      <label>Intervals (days) *</label>
       <div id="intervalChips" style="margin-top:8px;"></div>
       <input id="intervalNumberInput" type="number" placeholder="Add interval (days)" />
       <button id="addIntervalBtn" type="button">Add</button>
@@ -82,6 +84,15 @@
   <section id="view-library"><h3>Library</h3>
 
   <div id="libraryControls" class="section library-controls">
+    
+    <input type="text"id="librarySearchInput"placeholder="Search topics...">
+    <div class="status-filter">
+  <label><input type="radio" name="status" value="active" checked> Active</label>
+  <label><input type="radio" name="status" value="completed"> Completed</label>
+</div>
+
+
+
     <select id="domainFilter">
       <option value="">All domains</option>
     </select>
@@ -97,7 +108,7 @@
 
   <section id="view-settings"><h3>Import / Export</h3>
 
-  <button id="exportBtn" type="button">Export JSON</button>
+  <button id="exportBtn" type="button">back up data</button>
   <input type="file" id="importInput" accept=".json" />
 
   <h3>Settings</h3>
@@ -115,11 +126,8 @@
 
     <button id="saveSettingsBtn" type="button">Save Settings</button>
   </div>
-  <label>
-  <input type="checkbox" id="themeToggle">
-  Dark mode
-</label>
 </section>
+</div>
   <script src="state.js"></script>
 <script src="intervals.js"></script>
 <script src="calendar.js"></script>

@@ -39,6 +39,24 @@ function getTopicsForDate(date) {
     .map(r => r.topic);
 }
 
+function getLastRevisionDate(topic) {
+  const dates = getRevisionDates(topic);
+  if (dates.length === 0) return null;
+
+  return new Date(
+    Math.max(...dates.map(d => d.getTime()))
+  );
+}
+
+function isTopicCompleted(topic) {
+  const last = getLastRevisionDate(topic);
+  if (!last) return false;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  return last < today;
+}
 
 /*************************************************
  * CALENDAR RENDERING
@@ -127,7 +145,7 @@ function renderSelectedDate() {
 
   topicsForDay.forEach(t => {
     const li = document.createElement("li");
-    li.textContent = t.title;
+    li.textContent = `${t.title} [${t.domain}]`;
     list.appendChild(li);
   });
 }

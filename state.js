@@ -83,5 +83,6 @@ function loadSettingsUI() {
 
   document.getElementById("defaultDomainInput").value =
     settings.defaultDomain;
+ 
 }
 
