@@ -21,12 +21,17 @@ renderDashboard();
 showView("dashboard");
 
 
-// V3 TODO
-// [ ] Dashboard auto-refresh
-// [ ] Navigation tabs
-// [ ] Edit topic
-// [ ] Delete topic
-// [ ] Dark mode
-// [ ] Library search
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("./service-worker.js")
+      .then(() => {
+        console.log("Service Worker registered");
+      })
+      .catch(err => {
+        console.error("Service Worker registration failed", err);
+      });
+  });
+}
 
 //<a href="https://www.flaticon.com/free-icons/continuous-learning" title="continuous learning icons">Continuous learning icons created by dwicon - Flaticon</a>
