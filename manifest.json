@@ -2,10 +2,10 @@
   "name": "Polymath Companion",
   "short_name": "Polymath",
   "description": "A calm, long-term learning companion for cross-domain thinkers.",
-  "start_url": ".",
+  "start_url": "./",
   "display": "standalone",
-  "background_color": "#f7f8fa",
-  "theme_color": "#5a8dee",
+  "background_color": "#E6D3B1",
+  "theme_color": "#E6D3B1",
   "icons": [
   {
     "src": "resources/icon-192.png",

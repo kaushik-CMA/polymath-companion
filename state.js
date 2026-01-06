@@ -86,3 +86,17 @@ function loadSettingsUI() {
  
 }
 
+const installBtn = document.getElementById("installBtn");
+
+if (installBtn) {
+  installBtn.addEventListener("click", async () => {
+    if (!deferredPrompt) return;
+
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+
+    deferredPrompt = null;
+    installBtn.style.display = "none";
+  });
+}
+
