@@ -122,6 +122,8 @@ const searchValue = document.getElementById("librarySearchInput").value.trim().t
      if (window.highlightTopicId === t.id) {
   li.style.background = "#eef3ff";
   li.scrollIntoView({ behavior: "smooth", block: "center" });
+  li.setAttribute("tabindex","-1");
+  li.focus();
   window.highlightTopicId = null;
 }
     // ---- HEADER ----

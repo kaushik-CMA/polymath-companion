@@ -366,3 +366,12 @@ button.small {
   margin-left: 4px;
   font-size: 0.9em;
 }
+
+li:focus {
+  outline: none;
+}
+
+li.highlight {
+  background: #eef3ff;
+  border-left: 4px solid #5a8dee;
+}
