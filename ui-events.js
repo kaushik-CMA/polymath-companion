@@ -17,6 +17,7 @@ addBtn.addEventListener("click", () => {
     new Date().toISOString().slice(0, 10);
 
   document.getElementById("topicNotesInput").value = "";
+  
 });
 
 // Cancel Add Topic

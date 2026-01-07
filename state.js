@@ -99,4 +99,3 @@ if (installBtn) {
     installBtn.style.display = "none";
   });
 }
-

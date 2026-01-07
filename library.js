@@ -35,8 +35,20 @@ function populateDomainSuggestions() {
 }
 
 function renderLibrary() {
+
+  // 🔐 Apply classification override (if any)
+  if (libraryStatusOverride) {
+    document
+      .querySelectorAll('input[name="status"]')
+      .forEach(r => {
+        r.checked = r.value === libraryStatusOverride;
+      });
+
+    libraryStatusOverride = null; // consume once
+  }
+
   const list = document.getElementById("libraryList");
-  const domainFilter = document.getElementById("domainFilter").value;
+  const domain = document.getElementById("domainFilter").value;
   const sortBy = document.getElementById("sortBy").value;
 
   list.innerHTML = "";
@@ -44,7 +56,7 @@ function renderLibrary() {
   let filtered = [...topics];
 
   // ---------- FILTER ----------
-  if (domainFilter) {
+  if (domain) {
     filtered = filtered.filter(t => t.domain === domainFilter);
   }
 
@@ -60,9 +72,10 @@ function renderLibrary() {
 }
 
 const status =
-  document.querySelector('input[name="status"]:checked')?.value??"active";
+  document.querySelector('input[name="status"]:checked')?.value;
 
-  if (status === "active") {
+
+if (status === "active") {
   filtered = filtered.filter(t => !isTopicCompleted(t));
 }
 
@@ -77,10 +90,6 @@ const searchValue = document.getElementById("librarySearchInput").value.trim().t
   filtered = filtered.filter(topic =>
     getSearchText(topic).includes(searchValue)
   );
-}
-if (filtered.length === 0) {
-  list.innerHTML = "<li>No matching topics</li>";
-  return;
 }
 
 
@@ -110,6 +119,11 @@ if (filtered.length === 0) {
   filtered.forEach(t => {
     const li = document.createElement("li");
 
+     if (window.highlightTopicId === t.id) {
+  li.style.background = "#eef3ff";
+  li.scrollIntoView({ behavior: "smooth", block: "center" });
+  window.highlightTopicId = null;
+}
     // ---- HEADER ----
     const header = document.createElement("div");
     header.style.display = "flex";
@@ -126,6 +140,9 @@ if (filtered.length === 0) {
 
     header.appendChild(title);
     header.appendChild(meta);
+
+   
+
 
     // ---- EDIT BUTTON ----
     const editBtn = document.createElement("button");

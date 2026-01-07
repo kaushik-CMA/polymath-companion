@@ -1,4 +1,4 @@
-
+let libraryStatusOverride = null;
 /*************************************************
  * CALENDAR + REVISION LOGIC
  *************************************************/
@@ -40,22 +40,55 @@ function getTopicsForDate(date) {
 }
 
 function getLastRevisionDate(topic) {
-  const dates = getRevisionDates(topic);
-  if (dates.length === 0) return null;
+  const dates = getSortedRevisionDates(topic); // MUST return Date objects
 
-  return new Date(
-    Math.max(...dates.map(d => d.getTime()))
-  );
+  if (!dates || dates.length === 0) return null;
+
+  return dates[dates.length - 1];
 }
 
 function isTopicCompleted(topic) {
   const last = getLastRevisionDate(topic);
-  if (!last) return false;
+  if (!last) return false; // 👈 VERY IMPORTANT
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
   return last < today;
+}
+
+
+function getSortedRevisionDates(topic) {
+  return topic.intervals
+    .map(days => addDays(topic.startDate, days))
+    .sort((a, b) => a - b);
+}
+
+function getPrevNextRevision(topic, referenceDate) {
+  const dates = getSortedRevisionDates(topic);
+
+  let prev = null;
+  let next = null;
+
+  for (let d of dates) {
+    if (d < referenceDate) prev = d;
+    if (d > referenceDate && !next) next = d;
+  }
+
+  return { prev, next };
+}
+
+function navigateToLibrary(topicId, mode) {
+  showView("library");
+
+  libraryStatusOverride = mode;
+  window.highlightTopicId = topicId;
+
+  // 🔑 CLEAR OTHER FILTERS
+  document.getElementById("domainFilter").value = "";
+  const search = document.getElementById("librarySearch");
+  if (search) search.value = "";
+  renderLibrary();
 }
 
 /*************************************************
@@ -143,13 +176,79 @@ function renderSelectedDate() {
     return;
   }
 
-  topicsForDay.forEach(t => {
-    const li = document.createElement("li");
-    li.textContent = `${t.title} [${t.domain}]`;
-    list.appendChild(li);
-  });
+ topicsForDay.forEach(topic => {
+  const li = document.createElement("li");
+
+  // Title (clickable)
+  const title = document.createElement("span");
+  title.textContent = topic.title;
+  title.className = "calendar-topic-title";
+  title.addEventListener("click", () => {
+  const mode = isTopicCompleted(topic) ? "completed" : "active";
+    console.log({
+  title: topic.title,
+  lastRevision: getLastRevisionDate(topic),
+  completed: isTopicCompleted(topic)
+});
+  navigateToLibrary(topic.id, mode);
+
+});
+
+
+  // Domain (plain text)
+  const domain = document.createElement("span");
+  domain.textContent = topic.domain ? ` [${topic.domain}]` : "";
+  domain.className = "calendar-topic-domain";
+
+  li.appendChild(title);
+  li.appendChild(domain);
+
+  /* ---------- Control buttons ---------- */
+  const controls = document.createElement("div");
+  controls.className = "calendar-controls";
+
+  const { prev, next } = getPrevNextRevision(topic, selectedDate);
+
+  if (prev) {
+    const prevBtn = document.createElement("button");
+    prevBtn.textContent = "Prev";
+    prevBtn.className = "secondary small";
+    prevBtn.addEventListener("click", () => {
+      jumpToCalendarDate(prev);
+    });
+    controls.appendChild(prevBtn);
+  }
+
+  if (next) {
+    const nextBtn = document.createElement("button");
+    nextBtn.textContent = "Next";
+    nextBtn.className = "secondary small";
+    nextBtn.addEventListener("click", () => {
+      jumpToCalendarDate(next);
+    });
+    controls.appendChild(nextBtn);
+  }
+
+  if (controls.children.length > 0) {
+    li.appendChild(controls);
+  }
+
+  list.appendChild(li);
+});
 }
 
+function jumpToCalendarDate(date) {
+  selectedDate = new Date(date);
+
+  currentDate = new Date(
+    selectedDate.getFullYear(),
+    selectedDate.getMonth(),
+    1
+  );
+
+  renderCalendar();
+  renderSelectedDate();
+}
 /*************************************************
  * DASHBOARD
  *************************************************/
