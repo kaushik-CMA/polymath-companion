@@ -57,7 +57,7 @@ function renderLibrary() {
 
   // ---------- FILTER ----------
   if (domain) {
-    filtered = filtered.filter(t => t.domain === domainFilter);
+    filtered = filtered.filter(t => t.domain === domain);
   }
 
   function getSearchText(topic) {

@@ -1,6 +1,10 @@
-/* ===============================
+/* =========================================================
    GLOBAL BASE
-================================ */
+========================================================= */
+
+* {
+  box-sizing: border-box;
+}
 
 input,
 button,
@@ -9,44 +13,46 @@ textarea {
   font-size: 16px;
 }
 
-/* ===============================
-   COLOR PALETTE (WOODY)
-================================ */
+body {
+  margin: 0;
+  font-family: "Georgia", "Times New Roman", serif;
+  line-height: 1.7;
+}
+
+/* =========================================================
+   COLOR PALETTE — WOODY THEME
+========================================================= */
 
 :root {
   --bg: #f4f1ea;           /* parchment */
   --text: #2b2b2b;         /* ink */
   --card: #fbf9f4;         /* paper */
-  --border: #d6cfc2;       /* soft wood grain */
-  --primary: #7b5e3b;      /* wood brown */
+  --border: #d6cfc2;       /* wood grain */
+  --primary: #7b5e3b;      /* brown */
   --primary-hover: #6a4f31;
   --accent: #9c7a4a;
 }
 
-/* ===============================
-   BODY & TYPOGRAPHY
-================================ */
+/* =========================================================
+   TYPOGRAPHY
+========================================================= */
 
 body {
-  font-family: "Georgia", "Times New Roman", serif;
   background: var(--bg);
   color: var(--text);
-  line-height: 1.7;
-  margin: 0;
 }
 
 h1 {
-  font-weight: 500;
   font-size: 1.8rem;
+  font-weight: 500;
   margin-bottom: 6px;
 }
 
 h3 {
-  margin-top: 28px;
-  margin-bottom: 10px;
-  font-weight: 500;
   font-size: 1.15rem;
+  font-weight: 500;
   color: #4a3b28;
+  margin: 26px 0 10px;
 }
 
 .subtitle {
@@ -55,19 +61,14 @@ h3 {
   margin-bottom: 14px;
 }
 
-/* ===============================
-   LAYOUT
-================================ */
+/* =========================================================
+   LAYOUT WRAPPERS
+========================================================= */
 
-.container {
+main {
   max-width: 720px;
   margin: 0 auto;
   padding: 16px;
-}
-
-section {
-  padding: 14px;
-  margin-bottom: 26px;
 }
 
 .section {
@@ -75,25 +76,87 @@ section {
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 16px 18px;
+  margin-bottom: 24px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.04);
 }
 
 /* ===============================
-   INPUTS
+   NAVIGATION (SIMPLE + STICKY)
 ================================ */
+
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  background: var(--bg);              /* prevents bleed-through */
+  border-bottom: 1px solid var(--border);
+
+  padding: 8px 12px;
+  margin-bottom: 20px;
+
+  display: flex;
+  gap: 8px;
+  flex-wrap: nowrap;    
+  justify-content: flex-start;                /* allows mobile wrapping */
+  align-items: center;
+}
+
+/* Nav buttons */
+nav button {
+  background: #e6dccd;
+  color: #3a2f21;
+  border: 1px solid var(--border);
+
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-family: inherit;
+
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Active tab */
+nav button.active {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+/* Hover */
+nav button:hover {
+  background: #d8cfc2;
+}
+
+/* ===============================
+   MOBILE NAV (KEEP SAME FEEL)
+================================ */
+
+@media (max-width: 600px) {
+  nav {
+    justify-content: space-between;
+  }
+
+  nav button {
+    flex: 1 1 auto;
+    text-align: center;
+  }
+}
+/* =========================================================
+   INPUTS
+========================================================= */
 
 input,
 textarea,
 select {
   width: 100%;
   padding: 8px 10px;
-  margin-top: 4px;
-  margin-bottom: 12px;
+  margin: 4px 0 12px;
   border-radius: 6px;
   border: 1px solid var(--border);
   background: #fffdf8;
   color: var(--text);
-  font-size: 14px;
   font-family: inherit;
 }
 
@@ -105,11 +168,12 @@ select:focus {
   background: #ffffff;
 }
 
-/* ===============================
+/* =========================================================
    BUTTONS
-================================ */
+========================================================= */
 
 button {
+  min-height: 44px;
   padding: 8px 14px;
   border-radius: 6px;
   border: none;
@@ -117,7 +181,6 @@ button {
   color: #fff;
   font-weight: 500;
   cursor: pointer;
-  min-height: 44px;
   font-family: inherit;
 }
 
@@ -134,9 +197,14 @@ button.secondary:hover {
   background: #d8cfc2;
 }
 
-/* ===============================
+button.small {
+  font-size: 12px;
+  padding: 4px 8px;
+}
+
+/* =========================================================
    FORM ACTIONS
-================================ */
+========================================================= */
 
 .form-actions {
   display: flex;
@@ -144,21 +212,20 @@ button.secondary:hover {
   gap: 10px;
 }
 
-/* ===============================
+/* =========================================================
    INTERVAL CHIPS
-================================ */
+========================================================= */
 
 #intervalChips {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-bottom: 6px;
 }
 
 .interval-chip {
-  padding: 4px 10px;
   background: #e6dccd;
   border-radius: 14px;
+  padding: 4px 10px;
   font-size: 14px;
   color: #3a2f21;
 }
@@ -169,35 +236,29 @@ button.secondary:hover {
   color: #6a4f31;
 }
 
-/* ===============================
-   CALENDAR
-================================ */
+/* =========================================================
+   CALENDAR VIEW
+========================================================= */
 
-#calendar {
-  margin-top: 30px;
-  max-width: 360px;
-}
-
-#calendarHeader {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 12px;
-  font-weight: 500;
-  color: #4a3b28;
+#calendarHeader,
+#calendarGrid {
+  position: sticky;
+  top: 56px;
+  z-index: 900;
+  background: var(--bg);
 }
 
 #calendarGrid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 6px;
+  margin-bottom: 8px;
 }
 
 .calendar-day {
-  border-radius: 6px;
-  padding: 6px 0;
   text-align: center;
+  padding: 6px 0;
+  border-radius: 6px;
   cursor: pointer;
 }
 
@@ -218,26 +279,51 @@ button.secondary:hover {
   margin: 4px auto 0;
 }
 
-/* ===============================
-   LISTS
-================================ */
+/* =========================================================
+   CALENDAR TOPIC LIST (SCROLLABLE)
+========================================================= */
 
-ul {
-  padding-left: 18px;
+.selected-date-topics {
+  max-height: calc(100vh - 220px);
+  overflow-y: auto;
 }
 
-li {
-  margin-bottom: 6px;
+.calendar-topic-title {
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: 500;
 }
 
-/* ===============================
-   LIBRARY
-================================ */
+.calendar-topic-domain {
+  opacity: 0.7;
+  margin-left: 4px;
+  font-size: 0.9em;
+}
+
+.calendar-controls {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+/* =========================================================
+   LIBRARY VIEW
+========================================================= */
 
 .library-controls {
+  position: sticky;
+  top: 56px;
+  z-index: 900;
+  background: var(--bg);
+  padding-top: 8px;
   display: flex;
   gap: 10px;
   margin-bottom: 12px;
+}
+
+.library-scroll {
+  max-height: calc(100vh - 180px);
+  overflow-y: auto;
 }
 
 #libraryList li {
@@ -248,82 +334,15 @@ li {
   margin-bottom: 10px;
 }
 
-#libraryList li strong {
-  color: #3a2f21;
+#libraryList li.highlight {
+  background: #eef3ff;
+  border-left: 4px solid #5a8dee;
 }
 
-#libraryList button {
-  margin-right: 6px;
-  margin-top: 6px;
-  font-size: 13px;
-}
+/* =========================================================
+   STATUS FILTER
+========================================================= */
 
-/* ===============================
-   NAVIGATION
-================================ */
-
-nav {
-  margin-bottom: 24px;
-}
-
-nav button {
-  background: #e6dccd;
-  color: #3a2f21;
-  border: 1px solid #d6cfc2;
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-weight: 500;
-}
-
-nav button.active {
-  background: #7b5e3b;
-  color: #fff;
-}
-
-nav button:hover {
-  background: #d8cfc2;
-}
-
-
-/* ===============================
-   MOBILE
-================================ */
-
-@media (max-width: 600px) {
-
-  .nav{
-    display: grid;
-    grid-template-columns: repeat(2,1fr);
-  }
-  .form-actions {
-    flex-direction: column;
-  }
-
-  .section{
-    margin-bottom: 20px;
-  }
-
-  .nav button{
-    padding: 10px;
-    font-size: 14px;
-  }
-
-  .form-actions button {
-    width: 100%;
-  }
-
-  .library-controls {
-    flex-direction: column;
-  }
-
-  .library-controls select {
-    width: 100%;
-  }
-}
-main {
-  max-width: 720px;
-  margin: 0 auto;
-}
 .status-filter {
   display: flex;
   gap: 16px;
@@ -338,40 +357,34 @@ main {
   font-size: 14px;
 }
 
-.calendar-topic-link {
-  text-decoration: underline;
-  cursor: pointer;
-  display: inline-block;
-  margin-bottom: 4px;
-}
+/* =========================================================
+   MOBILE
+========================================================= */
 
-.calendar-controls {
+@media (max-width: 600px) {
+
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+
+  .library-controls {
+    flex-direction: column;
+  }
+
+.app-logo {
   display: flex;
-  gap: 6px;
-  margin-top: 4px;
+  margin: 12px 0 6px 0;
+  justify-content: center;
 }
 
-button.small {
-  font-size: 12px;
-  padding: 4px 8px;
-}
-.calendar-topic-title {
-  text-decoration: underline;
-  cursor: pointer;
-  font-weight: 500;
-}
-
-.calendar-topic-domain {
-  opacity: 0.7;
-  margin-left: 4px;
-  font-size: 0.9em;
-}
-
-li:focus {
-  outline: none;
-}
-
-li.highlight {
-  background: #eef3ff;
-  border-left: 4px solid #5a8dee;
+.app-logo img {
+  width: 90px;
+  height: auto;
+  opacity: 0.65;
 }

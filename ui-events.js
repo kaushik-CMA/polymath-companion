@@ -201,3 +201,24 @@ document.getElementById("saveSettingsBtn")
   .forEach(radio => {
     radio.addEventListener("change", renderLibrary);
   });
+
+  document
+  .getElementById("clearLibraryFilters")
+  .addEventListener("click", () => {
+
+    // Reset status to Active
+    document.querySelectorAll('input[name="status"]').forEach(r => {
+      r.checked = r.value === "active";
+    });
+
+    // Reset domain
+    document.getElementById("domainFilter").value = "";
+
+    // Clear search
+    document.getElementById("librarySearchInput").value = "";
+
+    // Optional: reset sort
+    document.getElementById("sortBy").value = "title";
+
+    renderLibrary();
+  });

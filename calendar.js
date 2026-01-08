@@ -91,6 +91,28 @@ function navigateToLibrary(topicId, mode) {
   renderLibrary();
 }
 
+function navigateToLibraryWithSearch(topic) {
+  showView("library");
+
+  // Determine correct classification
+  const statusValue = isTopicCompleted(topic)
+    ? "completed"
+    : "active";
+
+  // Set classification radio
+  document.querySelectorAll('input[name="status"]').forEach(r => {
+    r.checked = r.value === statusValue;
+  });
+
+  // Clear domain filter
+  document.getElementById("domainFilter").value = "";
+
+  // Set search value
+  const searchInput = document.getElementById("librarySearchInput");
+  searchInput.value = topic.title;
+
+  renderLibrary();
+}
 /*************************************************
  * CALENDAR RENDERING
  *************************************************/
@@ -184,14 +206,7 @@ function renderSelectedDate() {
   title.textContent = topic.title;
   title.className = "calendar-topic-title";
   title.addEventListener("click", () => {
-  const mode = isTopicCompleted(topic) ? "completed" : "active";
-    console.log({
-  title: topic.title,
-  lastRevision: getLastRevisionDate(topic),
-  completed: isTopicCompleted(topic)
-});
-  navigateToLibrary(topic.id, mode);
-
+  navigateToLibraryWithSearch(topic);
 });
 
 
