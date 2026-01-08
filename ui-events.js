@@ -222,3 +222,18 @@ document.getElementById("saveSettingsBtn")
 
     renderLibrary();
   });
+
+ todayBtn.addEventListener("click", () => {
+  const today = new Date();
+
+  currentDate = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate()
+  );
+
+  selectedDate = currentDate;
+
+  renderCalendar();
+  renderSelectedDate();
+});

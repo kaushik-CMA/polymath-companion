@@ -242,12 +242,28 @@ button.small {
 
 #calendarHeader,
 #calendarGrid {
+  display: flex;
+  align-items: center;
+  gap: 10px ;
   position: sticky;
   top: 56px;
   z-index: 900;
   background: var(--bg);
 }
 
+#calendarHeader button{
+  min-width:40px;
+}
+
+#todayBtn{
+  background: #e7e0d6;
+  color: #3a2f21;
+  border: 1px solid var(--border);
+}
+
+#todayBtn:hover{
+  background: #d8cfc2;
+}
 #calendarGrid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
