@@ -45,20 +45,20 @@ body {
 h1 {
   font-size: 1.8rem;
   font-weight: 500;
-  margin-bottom: 6px;
+  margin: 5px 10px;
 }
 
 h3 {
   font-size: 1.15rem;
   font-weight: 500;
   color: #4a3b28;
-  margin: 26px 0 10px;
+  margin: 5px 10px;
 }
 
 .subtitle {
   font-style: italic;
   color: #6b5a45;
-  margin-bottom: 14px;
+  margin: 20px 10px;
 }
 
 /* =========================================================
@@ -76,7 +76,7 @@ main {
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 16px 18px;
-  margin-bottom: 24px;
+  margin: 0 5px 24px 5px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.04);
 }
 
@@ -93,7 +93,7 @@ nav {
   border-bottom: 1px solid var(--border);
 
   padding: 8px 12px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 
   display: flex;
   gap: 8px;
@@ -328,13 +328,27 @@ button.small {
 
 .library-controls {
   position: sticky;
-  top: 56px;
-  z-index: 900;
+  top: 60px; /* adjust based on nav height */
+  z-index: 10;
+
   background: var(--bg);
-  padding-top: 8px;
-  display: flex;
-  gap: 10px;
-  margin-bottom: 12px;
+  padding-bottom: 8px;
+}
+
+/* collapsible area */
+.filters-body {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+
+  transition:
+    max-height 180ms ease-out,
+    opacity 120ms ease-out;
+}
+
+.filters-body.expanded {
+  max-height: 500px;
+  opacity: 1;
 }
 
 .library-scroll {
@@ -348,6 +362,7 @@ button.small {
   border-radius: 10px;
   padding: 12px 14px;
   margin-bottom: 10px;
+  margin-right: 6px;
 }
 
 #libraryList li.highlight {

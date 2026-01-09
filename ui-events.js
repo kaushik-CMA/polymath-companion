@@ -237,3 +237,21 @@ document.getElementById("saveSettingsBtn")
   renderCalendar();
   renderSelectedDate();
 });
+
+// library filter togglr button
+let filtersExpanded = false;
+
+const toggleBtn = document.getElementById("toggleFiltersBtn");
+const controls = document.querySelector(".library-controls");
+
+toggleBtn.addEventListener("click", () => {
+
+
+  filtersExpanded = !filtersExpanded;
+
+  const filtersBody = document.querySelector(".filters-body");
+
+filtersBody.classList.toggle("expanded", filtersExpanded);
+
+  toggleBtn.textContent = filtersExpanded ? "Hide filters" : "Show filters";
+});

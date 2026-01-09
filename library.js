@@ -34,6 +34,13 @@ function populateDomainSuggestions() {
   });
 }
 
+//collapse filter
+function collapseFilters() {
+  filtersBody.classList.remove("expanded");
+  filtersExpanded = false;
+  toggleBtn.textContent = "Show filters";
+}
+
 function renderLibrary() {
 
   // 🔐 Apply classification override (if any)
