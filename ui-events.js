@@ -108,6 +108,8 @@ saveBtn.addEventListener("click", (e) => {
   renderCalendar();
   renderSelectedDate();
   renderDashboard();
+  populateDomainFilter();
+  populateDomainSuggestions();
 });
 
 /*************************************************
@@ -253,7 +255,7 @@ document.getElementById("importInput")
       }
     };
 
-    reader.readAsText(file);
+    reader.readAsText(file);l
   });
 
   /*************************************************
