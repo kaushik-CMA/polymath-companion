@@ -1,9 +1,15 @@
 /* =========================================================
-   GLOBAL BASE
+   RESET & BASE
 ========================================================= */
 
 * {
   box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Georgia", "Times New Roman", serif;
+  line-height: 1.7;
 }
 
 input,
@@ -13,22 +19,16 @@ textarea {
   font-size: 16px;
 }
 
-body {
-  margin: 0;
-  font-family: "Georgia", "Times New Roman", serif;
-  line-height: 1.7;
-}
-
 /* =========================================================
    COLOR PALETTE — WOODY THEME
 ========================================================= */
 
 :root {
-  --bg: #f4f1ea;           /* parchment */
-  --text: #2b2b2b;         /* ink */
-  --card: #fbf9f4;         /* paper */
-  --border: #d6cfc2;       /* wood grain */
-  --primary: #7b5e3b;      /* brown */
+  --bg: #f4f1ea;            /* parchment */
+  --text: #2b2b2b;          /* ink */
+  --card: #fbf9f4;          /* paper */
+  --border: #d6cfc2;        /* wood grain */
+  --primary: #7b5e3b;       /* brown */
   --primary-hover: #6a4f31;
   --accent: #9c7a4a;
 }
@@ -76,20 +76,20 @@ main {
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 16px 18px;
-  margin: 0 5px 24px 5px;
+  margin: 0 5px 24px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.04);
 }
 
-/* ===============================
-   NAVIGATION (SIMPLE + STICKY)
-================================ */
+/* =========================================================
+   NAVIGATION (STICKY)
+========================================================= */
 
 nav {
   position: sticky;
   top: 0;
   z-index: 1000;
 
-  background: var(--bg);              /* prevents bleed-through */
+  background: var(--bg);
   border-bottom: 1px solid var(--border);
 
   padding: 8px 12px;
@@ -97,52 +97,30 @@ nav {
 
   display: flex;
   gap: 8px;
-  flex-wrap: nowrap;    
-  justify-content: flex-start;                /* allows mobile wrapping */
   align-items: center;
 }
 
-/* Nav buttons */
 nav button {
   background: #e6dccd;
   color: #3a2f21;
   border: 1px solid var(--border);
-
   padding: 6px 12px;
   border-radius: 6px;
   font-weight: 500;
   font-family: inherit;
-
   cursor: pointer;
   white-space: nowrap;
-  flex-shrink: 0;
 }
 
-/* Active tab */
 nav button.active {
   background: var(--primary);
   color: #ffffff;
 }
 
-/* Hover */
 nav button:hover {
   background: #d8cfc2;
 }
 
-/* ===============================
-   MOBILE NAV (KEEP SAME FEEL)
-================================ */
-
-@media (max-width: 600px) {
-  nav {
-    justify-content: space-between;
-  }
-
-  nav button {
-    flex: 1 1 auto;
-    text-align: center;
-  }
-}
 /* =========================================================
    INPUTS
 ========================================================= */
@@ -237,33 +215,21 @@ button.small {
 }
 
 /* =========================================================
-   CALENDAR VIEW
+   CALENDAR
 ========================================================= */
 
-#calendarHeader,
-#calendarGrid {
-  display: flex;
-  align-items: center;
-  gap: 10px ;
+#calendarHeader {
   position: sticky;
   top: 56px;
   z-index: 900;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
   background: var(--bg);
 }
 
-#calendarHeader button{
-  min-width:40px;
-}
-
-#todayBtn{
-  background: #e7e0d6;
-  color: #3a2f21;
-  border: 1px solid var(--border);
-}
-
-#todayBtn:hover{
-  background: #d8cfc2;
-}
 #calendarGrid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -295,15 +261,6 @@ button.small {
   margin: 4px auto 0;
 }
 
-/* =========================================================
-   CALENDAR TOPIC LIST (SCROLLABLE)
-========================================================= */
-
-.selected-date-topics {
-  max-height: calc(100vh - 220px);
-  overflow-y: auto;
-}
-
 .calendar-topic-title {
   text-decoration: underline;
   cursor: pointer;
@@ -323,37 +280,27 @@ button.small {
 }
 
 /* =========================================================
-   LIBRARY VIEW
+   LIBRARY
 ========================================================= */
 
 .library-controls {
   position: sticky;
-  top: 60px; /* adjust based on nav height */
+  top: 56px;
   z-index: 10;
-
   background: var(--bg);
   padding-bottom: 8px;
 }
 
-/* collapsible area */
 .filters-body {
   overflow: hidden;
   max-height: 0;
   opacity: 0;
-
-  transition:
-    max-height 180ms ease-out,
-    opacity 120ms ease-out;
+  transition: max-height 180ms ease-out, opacity 120ms ease-out;
 }
 
 .filters-body.expanded {
   max-height: 500px;
   opacity: 1;
-}
-
-.library-scroll {
-  max-height: calc(100vh - 180px);
-  overflow-y: auto;
 }
 
 #libraryList li {
@@ -362,7 +309,6 @@ button.small {
   border-radius: 10px;
   padding: 12px 14px;
   margin-bottom: 10px;
-  margin-right: 6px;
 }
 
 #libraryList li.highlight {
@@ -389,36 +335,8 @@ button.small {
 }
 
 /* =========================================================
-   MOBILE
+   UTILITIES
 ========================================================= */
-
-@media (max-width: 600px) {
-
-  }
-
-  .form-actions {
-    flex-direction: column;
-  }
-
-  .form-actions button {
-    width: 100%;
-  }
-
-  .library-controls {
-    flex-direction: column;
-  }
-
-.app-logo {
-  display: flex;
-  margin: 12px 0 6px 0;
-  justify-content: center;
-}
-
-.app-logo img {
-  width: 90px;
-  height: auto;
-  opacity: 0.65;
-}
 
 .muted {
   font-size: 13px;
@@ -428,4 +346,39 @@ button.small {
 .muted a {
   color: inherit;
   text-decoration: underline;
+}
+
+.app-logo {
+  display: flex;
+  justify-content: center;
+  margin: 12px 0 6px;
+}
+
+.app-logo img {
+  width: 90px;
+  opacity: 0.65;
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+  nav {
+    justify-content: space-between;
+  }
+
+  nav button {
+    flex: 1 1 auto;
+    text-align: center;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
 }

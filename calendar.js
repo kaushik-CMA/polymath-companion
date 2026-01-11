@@ -1,55 +1,40 @@
-let libraryStatusOverride = null;
 /*************************************************
- * CALENDAR + REVISION LOGIC
+ * CALENDAR STATE COORDINATION
  *************************************************/
+
+// Used when calendar redirects to library
+let libraryStatusOverride = null;
+
+
+/*************************************************
+ * DATE & REVISION UTILITIES
+ * (pure logic — no DOM)
+ *************************************************/
+
+// Add N days to a date (returns new Date)
 function addDays(date, days) {
   const d = new Date(date);
   d.setDate(d.getDate() + days);
   return d;
 }
 
-function getRevisionDates(topic) {
-  return topic.intervals.map(days =>
-    addDays(topic.startDate, days)
-  );
+// Return sorted revision dates for a topic
+function getSortedRevisionDates(topic) {
+  return topic.intervals
+    .map(days => addDays(topic.startDate, days))
+    .sort((a, b) => a - b);
 }
 
-function getAllRevisions() {
-  const revisions = [];
-
-  topics.forEach(topic => {
-    const dates = getRevisionDates(topic);
-    dates.forEach(d => {
-      revisions.push({ date: d, topic });
-    });
-  });
-
-  return revisions;
-}
-
-function hasRevisionOnDate(date) {
-  return getAllRevisions().some(r =>
-    r.date.toDateString() === date.toDateString()
-  );
-}
-
-function getTopicsForDate(date) {
-  return getAllRevisions()
-    .filter(r => r.date.toDateString() === date.toDateString())
-    .map(r => r.topic);
-}
-
+// Last scheduled revision date
 function getLastRevisionDate(topic) {
-  const dates = getSortedRevisionDates(topic); // MUST return Date objects
-
-  if (!dates || dates.length === 0) return null;
-
-  return dates[dates.length - 1];
+  const dates = getSortedRevisionDates(topic);
+  return dates.length ? dates[dates.length - 1] : null;
 }
 
+// Whether topic has completed all revisions
 function isTopicCompleted(topic) {
   const last = getLastRevisionDate(topic);
-  if (!last) return false; // 👈 VERY IMPORTANT
+  if (!last) return false;
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -57,13 +42,7 @@ function isTopicCompleted(topic) {
   return last < today;
 }
 
-
-function getSortedRevisionDates(topic) {
-  return topic.intervals
-    .map(days => addDays(topic.startDate, days))
-    .sort((a, b) => a - b);
-}
-
+// Previous / next revision relative to a date
 function getPrevNextRevision(topic, referenceDate) {
   const dates = getSortedRevisionDates(topic);
 
@@ -78,44 +57,43 @@ function getPrevNextRevision(topic, referenceDate) {
   return { prev, next };
 }
 
-function navigateToLibrary(topicId, mode) {
-  showView("library");
 
-  libraryStatusOverride = mode;
-  window.highlightTopicId = topicId;
+/*************************************************
+ * REVISION LOOKUPS (across all topics)
+ *************************************************/
 
-  // 🔑 CLEAR OTHER FILTERS
-  document.getElementById("domainFilter").value = "";
-  const search = document.getElementById("librarySearch");
-  if (search) search.value = "";
-  renderLibrary();
-}
+// Flatten all revisions into [{ date, topic }]
+function getAllRevisions() {
+  const revisions = [];
 
-function navigateToLibraryWithSearch(topic) {
-  showView("library");
-
-  // Determine correct classification
-  const statusValue = isTopicCompleted(topic)
-    ? "completed"
-    : "active";
-
-  // Set classification radio
-  document.querySelectorAll('input[name="status"]').forEach(r => {
-    r.checked = r.value === statusValue;
+  topics.forEach(topic => {
+    getSortedRevisionDates(topic).forEach(date => {
+      revisions.push({ date, topic });
+    });
   });
 
-  // Clear domain filter
-  document.getElementById("domainFilter").value = "";
-
-  // Set search value
-  const searchInput = document.getElementById("librarySearchInput");
-  searchInput.value = topic.title;
-
-  renderLibrary();
+  return revisions;
 }
+
+// Whether any revision exists on given date
+function hasRevisionOnDate(date) {
+  return getAllRevisions().some(r =>
+    r.date.toDateString() === date.toDateString()
+  );
+}
+
+// Topics scheduled for a given date
+function getTopicsForDate(date) {
+  return getAllRevisions()
+    .filter(r => r.date.toDateString() === date.toDateString())
+    .map(r => r.topic);
+}
+
+
 /*************************************************
- * CALENDAR RENDERING
+ * CALENDAR UI RENDERING
  *************************************************/
+
 function renderCalendar() {
   const grid = document.getElementById("calendarGrid");
   const title = document.getElementById("calendarTitle");
@@ -131,9 +109,9 @@ function renderCalendar() {
   const month = currentDate.getMonth();
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const today = new Date().toDateString();
+  const todayStr = new Date().toDateString();
 
-  // Empty cells before first day
+  // Leading empty cells
   for (let i = 0; i < firstDay; i++) {
     grid.appendChild(document.createElement("div"));
   }
@@ -152,7 +130,7 @@ function renderCalendar() {
       cell.appendChild(dot);
     }
 
-    if (cellDate.toDateString() === today) {
+    if (cellDate.toDateString() === todayStr) {
       cell.classList.add("today");
     }
 
@@ -172,6 +150,7 @@ function renderCalendar() {
     grid.appendChild(cell);
   }
 }
+
 
 function renderSelectedDate() {
   const header = document.getElementById("selectedDateHeader");
@@ -198,63 +177,53 @@ function renderSelectedDate() {
     return;
   }
 
- topicsForDay.forEach(topic => {
-  const li = document.createElement("li");
+  topicsForDay.forEach(topic => {
+    const li = document.createElement("li");
 
-  // Title (clickable)
-  const title = document.createElement("span");
-  title.textContent = topic.title;
-  title.className = "calendar-topic-title";
-  title.addEventListener("click", () => {
-  navigateToLibraryWithSearch(topic);
-});
-
-
-  // Domain (plain text)
-  const domain = document.createElement("span");
-  domain.textContent = topic.domain ? ` [${topic.domain}]` : "";
-  domain.className = "calendar-topic-domain";
-
-  li.appendChild(title);
-  li.appendChild(domain);
-
-  /* ---------- Control buttons ---------- */
-  const controls = document.createElement("div");
-  controls.className = "calendar-controls";
-
-  const { prev, next } = getPrevNextRevision(topic, selectedDate);
-
-  if (prev) {
-    const prevBtn = document.createElement("button");
-    prevBtn.textContent = "Prev";
-    prevBtn.className = "secondary small";
-    prevBtn.addEventListener("click", () => {
-      jumpToCalendarDate(prev);
+    const title = document.createElement("span");
+    title.textContent = topic.title;
+    title.className = "calendar-topic-title";
+    title.addEventListener("click", () => {
+      navigateToLibraryWithSearch(topic);
     });
-    controls.appendChild(prevBtn);
-  }
 
-  if (next) {
-    const nextBtn = document.createElement("button");
-    nextBtn.textContent = "Next";
-    nextBtn.className = "secondary small";
-    nextBtn.addEventListener("click", () => {
-      jumpToCalendarDate(next);
-    });
-    controls.appendChild(nextBtn);
-  }
+    const domain = document.createElement("span");
+    domain.textContent = topic.domain ? ` [${topic.domain}]` : "";
+    domain.className = "calendar-topic-domain";
 
-  if (controls.children.length > 0) {
-    li.appendChild(controls);
-  }
+    li.appendChild(title);
+    li.appendChild(domain);
 
-  list.appendChild(li);
-});
+    const controls = document.createElement("div");
+    controls.className = "calendar-controls";
+
+    const { prev, next } = getPrevNextRevision(topic, selectedDate);
+
+    if (prev) {
+      const btn = document.createElement("button");
+      btn.textContent = "Prev";
+      btn.className = "secondary small";
+      btn.onclick = () => jumpToCalendarDate(prev);
+      controls.appendChild(btn);
+    }
+
+    if (next) {
+      const btn = document.createElement("button");
+      btn.textContent = "Next";
+      btn.className = "secondary small";
+      btn.onclick = () => jumpToCalendarDate(next);
+      controls.appendChild(btn);
+    }
+
+    if (controls.children.length) li.appendChild(controls);
+
+    list.appendChild(li);
+  });
 }
+
 
 function jumpToCalendarDate(date) {
   selectedDate = new Date(date);
-
   currentDate = new Date(
     selectedDate.getFullYear(),
     selectedDate.getMonth(),
@@ -264,23 +233,24 @@ function jumpToCalendarDate(date) {
   renderCalendar();
   renderSelectedDate();
 }
+
+
 /*************************************************
- * DASHBOARD
+ * DASHBOARD (SHOULD MOVE LATER)
  *************************************************/
+
 function renderDashboard() {
   const el = document.getElementById("dashboard");
 
-  const today = new Date();
-  const todayStr = today.toDateString();
+  const todayStr = new Date().toDateString();
+  const all = getAllRevisions();
 
-  const allRevisions = getAllRevisions();
-
-  const todayCount = allRevisions.filter(r =>
+  const todayCount = all.filter(r =>
     r.date.toDateString() === todayStr
   ).length;
 
-  const upcomingCount = allRevisions.filter(r => {
-    const diff = (r.date - today) / (1000 * 60 * 60 * 24);
+  const upcomingCount = all.filter(r => {
+    const diff = (r.date - new Date()) / 86400000;
     return diff > 0 && diff <= 7;
   }).length;
 

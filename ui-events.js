@@ -1,12 +1,23 @@
+/*************************************************
+ * UI EVENTS
+ *
+ * This file wires USER INTENT → APP ACTIONS
+ *
+ * Rule of thumb:
+ * - No heavy logic here
+ * - Mostly orchestration & delegation
+ * - Business logic lives elsewhere
+ *************************************************/
 
 /*************************************************
- * EVENT LISTENERS (USER ACTIONS)
+ * ADD / EDIT TOPIC FLOW
  *************************************************/
 
 // Open Add Topic form
 addBtn.addEventListener("click", () => {
   form.style.display = "block";
 
+  // Load defaults
   intervalValues = [...settings.defaultIntervals];
   renderIntervalChips();
 
@@ -17,12 +28,13 @@ addBtn.addEventListener("click", () => {
     new Date().toISOString().slice(0, 10);
 
   document.getElementById("topicNotesInput").value = "";
-  
 });
 
 // Cancel Add Topic
 cancelBtn.addEventListener("click", () => {
   form.style.display = "none";
+
+  // Reset temporary form state
   intervalValues = [];
   renderIntervalChips();
 
@@ -32,7 +44,10 @@ cancelBtn.addEventListener("click", () => {
   document.getElementById("topicNotesInput").value = "";
 });
 
-// Save Topic
+/*************************************************
+ * SAVE TOPIC (ADD or EDIT)
+ *************************************************/
+
 saveBtn.addEventListener("click", (e) => {
   e.preventDefault();
 
@@ -52,7 +67,7 @@ saveBtn.addEventListener("click", (e) => {
   const editingId = form.dataset.editingId;
 
   if (editingId) {
-    // ===== EDIT EXISTING TOPIC =====
+    // ----- EDIT EXISTING TOPIC -----
     const index = topics.findIndex(t => t.id === editingId);
 
     topics[index] = {
@@ -68,7 +83,7 @@ saveBtn.addEventListener("click", (e) => {
     delete form.dataset.editingId;
 
   } else {
-    // ===== ADD NEW TOPIC =====
+    // ----- ADD NEW TOPIC -----
     topics.push({
       id: crypto.randomUUID(),
       title,
@@ -81,20 +96,24 @@ saveBtn.addEventListener("click", (e) => {
     });
   }
 
-  // ===== COMMON CLEANUP & RENDER =====
+  // ----- COMMON CLEANUP -----
   localStorage.setItem("topics", JSON.stringify(topics));
 
   intervalValues = [];
   renderIntervalChips();
   form.style.display = "none";
 
+  // ----- RE-RENDER AFFECTED VIEWS -----
   renderLibrary();
   renderCalendar();
   renderSelectedDate();
   renderDashboard();
 });
 
-// Calendar navigation
+/*************************************************
+ * CALENDAR NAVIGATION
+ *************************************************/
+
 document.getElementById("prevMonthBtn")
   .addEventListener("click", () => {
     currentDate.setMonth(currentDate.getMonth() - 1);
@@ -107,12 +126,86 @@ document.getElementById("nextMonthBtn")
     renderCalendar();
   });
 
-// Library filters
+todayBtn.addEventListener("click", () => {
+  const today = new Date();
+
+  currentDate = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate()
+  );
+
+  selectedDate = currentDate;
+
+  renderCalendar();
+  renderSelectedDate();
+});
+
+/*************************************************
+ * LIBRARY FILTERS & SEARCH
+ *************************************************/
+
 document.getElementById("domainFilter")
   .addEventListener("change", renderLibrary);
 
 document.getElementById("sortBy")
   .addEventListener("change", renderLibrary);
+
+document.getElementById("librarySearchInput")
+  .addEventListener("input", renderLibrary);
+
+document
+  .querySelectorAll('input[name="status"]')
+  .forEach(radio => {
+    radio.addEventListener("change", renderLibrary);
+  });
+
+// Clear filters & restore defaults
+document
+  .getElementById("clearLibraryFilters")
+  .addEventListener("click", () => {
+
+    document.querySelectorAll('input[name="status"]').forEach(r => {
+      r.checked = r.value === "active";
+    });
+
+    document.getElementById("domainFilter").value = "";
+    document.getElementById("librarySearchInput").value = "";
+    document.getElementById("sortBy").value = "title";
+
+    renderLibrary();
+  });
+
+  /*************************************************
+ * LIBRARY FILTER TOGGLE (UI STATE)
+ *************************************************/
+
+let filtersExpanded = false;
+
+const toggleBtn = document.getElementById("toggleFiltersBtn");
+
+toggleBtn.addEventListener("click", () => {
+  filtersExpanded = !filtersExpanded;
+
+  const filtersBody = document.querySelector(".filters-body");
+  filtersBody.classList.toggle("expanded", filtersExpanded);
+
+  toggleBtn.textContent =
+    filtersExpanded ? "Hide filters" : "Show filters";
+});
+
+/*************************************************
+ * MAIN NAVIGATION
+ *************************************************/
+
+document.getElementById("mainNav").addEventListener("click", e => {
+  if (e.target.tagName !== "BUTTON") return;
+  showView(e.target.dataset.view);
+});
+
+/*************************************************
+ * IMPORT / EXPORT
+ *************************************************/
 
 // Export data
 document.getElementById("exportBtn")
@@ -163,7 +256,10 @@ document.getElementById("importInput")
     reader.readAsText(file);
   });
 
-// Save settings
+  /*************************************************
+ * SETTINGS
+ *************************************************/
+
 document.getElementById("saveSettingsBtn")
   .addEventListener("click", () => {
     const intervalsRaw =
@@ -185,73 +281,3 @@ document.getElementById("saveSettingsBtn")
     localStorage.setItem("settings", JSON.stringify(settings));
     alert("Settings saved.");
   });
-
-  //navigation bar
-  document.getElementById("mainNav").addEventListener("click", e => {
-  if (e.target.tagName !== "BUTTON") return;
-  showView(e.target.dataset.view);
-});
-
-//
-
-    document.getElementById("librarySearchInput").addEventListener("input", renderLibrary);
-
-    document
-  .querySelectorAll('input[name="status"]')
-  .forEach(radio => {
-    radio.addEventListener("change", renderLibrary);
-  });
-
-  document
-  .getElementById("clearLibraryFilters")
-  .addEventListener("click", () => {
-
-    // Reset status to Active
-    document.querySelectorAll('input[name="status"]').forEach(r => {
-      r.checked = r.value === "active";
-    });
-
-    // Reset domain
-    document.getElementById("domainFilter").value = "";
-
-    // Clear search
-    document.getElementById("librarySearchInput").value = "";
-
-    // Optional: reset sort
-    document.getElementById("sortBy").value = "title";
-
-    renderLibrary();
-  });
-
- todayBtn.addEventListener("click", () => {
-  const today = new Date();
-
-  currentDate = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate()
-  );
-
-  selectedDate = currentDate;
-
-  renderCalendar();
-  renderSelectedDate();
-});
-
-// library filter togglr button
-let filtersExpanded = false;
-
-const toggleBtn = document.getElementById("toggleFiltersBtn");
-const controls = document.querySelector(".library-controls");
-
-toggleBtn.addEventListener("click", () => {
-
-
-  filtersExpanded = !filtersExpanded;
-
-  const filtersBody = document.querySelector(".filters-body");
-
-filtersBody.classList.toggle("expanded", filtersExpanded);
-
-  toggleBtn.textContent = filtersExpanded ? "Hide filters" : "Show filters";
-});

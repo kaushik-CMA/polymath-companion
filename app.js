@@ -1,42 +1,73 @@
+/*************************************************
+ * VIEW NAVIGATION
+ *************************************************/
+
+/**
+ * Shows one view and hides all others.
+ * Each <section> is treated as a screen.
+ */
 function showView(viewName) {
   document.querySelectorAll("section").forEach(sec => {
     sec.style.display = "none";
   });
 
-  document.getElementById(`view-${viewName}`).style.display = "block";
+  const activeView = document.getElementById(`view-${viewName}`);
+  if (activeView) {
+    activeView.style.display = "block";
+  }
 }
 
 
+/*************************************************
+ * APPLICATION BOOTSTRAP
+ * Sync persistent state → UI on page load
+ *************************************************/
+
+function initApp() {
+  loadSettingsUI();
+
+  populateDomainFilter();
+  populateDomainSuggestions();
+
+  renderLibrary();
+  renderCalendar();
+  renderSelectedDate();
+  renderDashboard();
+
+  // Default landing screen
+  showView("dashboard");
+}
+
+// Run immediately
+initApp();
+
 
 /*************************************************
- * PAGE LOAD – INITIAL UI SYNC
+ * PWA: SERVICE WORKER REGISTRATION
  *************************************************/
-loadSettingsUI();
-populateDomainFilter();
-populateDomainSuggestions();
-renderLibrary();
-renderCalendar();
-renderSelectedDate();
-renderDashboard();
-showView("dashboard");
-
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
       .register("./service-worker.js")
       .then(() => {
-        console.log("Service Worker registered");
+        console.log("[PWA] Service Worker registered");
       })
       .catch(err => {
-        console.error("Service Worker registration failed", err);
+        console.error("[PWA] Service Worker registration failed", err);
       });
   });
 }
 
-// install experience
+
+/*************************************************
+ * PWA: INSTALL EXPERIENCE
+ *************************************************/
+
+// Browser-provided install prompt (deferred)
 let deferredPrompt = null;
 
+// Capture install prompt and show custom button
 window.addEventListener("beforeinstallprompt", e => {
   e.preventDefault();
   deferredPrompt = e;
@@ -46,7 +77,3 @@ window.addEventListener("beforeinstallprompt", e => {
     installBtn.style.display = "block";
   }
 });
-
-
-
-//<a href="https://www.flaticon.com/free-icons/continuous-learning" title="continuous learning icons">Continuous learning icons created by dwicon - Flaticon</a>

@@ -1,4 +1,4 @@
-const CACHE_NAME = "polymath-companion-v3.6";
+const CACHE_NAME = "polymath-companion-v3.7";
 
 const ASSETS_TO_CACHE = [
   "./",
@@ -25,3 +25,5 @@ self.addEventListener("fetch", event => {
     })
   );
 });
+
+//<a href="https://www.flaticon.com/free-icons/continuous-learning" title="continuous learning icons">Continuous learning icons created by dwicon - Flaticon</a>

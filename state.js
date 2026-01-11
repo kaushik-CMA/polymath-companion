@@ -1,6 +1,14 @@
 /*************************************************
- * DOM REFERENCES
- * (connect JavaScript to HTML elements)
+ * STATE DEBUG SWITCH
+ * Flip to true ONLY when debugging state issues
+ *************************************************/
+const DEBUG_STATE = false;
+
+
+/*************************************************
+ * DOM REFERENCES (TEMPORARY)
+ * NOTE: These should ideally live in ui-events.js
+ * Kept here for now to avoid changing behavior
  *************************************************/
 const addBtn = document.getElementById("addTopicBtn");
 const form = document.getElementById("addTopicForm");
@@ -17,20 +25,32 @@ const addIntervalBtn = document.getElementById("addIntervalBtn");
  * APPLICATION STATE
  *************************************************/
 
-// Temporary state while Add Topic form is open
+/**
+ * Temporary state used while the "Add Topic" form is open.
+ * This is NOT persisted.
+ */
 let intervalValues = [];
 
-// Persistent topics data (loaded from localStorage)
+/**
+ * Main persistent data store.
+ * Loaded once from localStorage and shared across modules.
+ */
 let topics = JSON.parse(localStorage.getItem("topics")) || [];
 
-// Calendar UI state
+/**
+ * Calendar navigation state (UI-level state).
+ */
 let currentDate = new Date();
 let selectedDate = null;
+
+if (DEBUG_STATE) {
+  console.log("[STATE] Initial topics loaded:", topics);
+}
 
 
 /*************************************************
  * DATA NORMALIZATION
- * (protects app from old / invalid data)
+ * Ensures backward compatibility & safe defaults
  *************************************************/
 function normalizeTopic(topic) {
   const today = new Date().toISOString().slice(0, 10);
@@ -43,29 +63,52 @@ function normalizeTopic(topic) {
     notes: topic.notes ?? null,
 
     startDate: topic.startDate ?? today,
-    intervals: Array.isArray(topic.intervals) ? topic.intervals : [],
+    intervals: Array.isArray(topic.intervals)
+      ? topic.intervals
+      : [],
 
     createdAt: topic.createdAt ?? today,
     updatedAt: topic.updatedAt ?? today
   };
 }
 
-// Normalize all topics on load
+/**
+ * Normalize all topics on load to protect against:
+ * - old versions
+ * - partial imports
+ * - malformed JSON
+ */
 topics = topics.map(normalizeTopic);
 localStorage.setItem("topics", JSON.stringify(topics));
 
+if (DEBUG_STATE) {
+  console.log("[STATE] Topics after normalization:", topics);
+}
+
 
 /*************************************************
- * SETTINGS (defaults + user overrides)
+ * SETTINGS STATE (defaults + overrides)
  *************************************************/
+
+/**
+ * Hard-coded defaults.
+ * Never mutated directly.
+ */
 const defaultSettings = {
   defaultIntervals: [3, 10, 30],
-  defaultDomain: "",
+  defaultDomain: ""
 };
 
-let settings = JSON.parse(localStorage.getItem("settings")) || defaultSettings;
+/**
+ * Load user settings (if any).
+ */
+let settings =
+  JSON.parse(localStorage.getItem("settings")) || {};
 
-// Merge defaults with saved settings (user values override defaults)
+/**
+ * Merge defaults with user overrides.
+ * User values ALWAYS win.
+ */
 settings = {
   ...defaultSettings,
   ...settings
@@ -73,9 +116,14 @@ settings = {
 
 localStorage.setItem("settings", JSON.stringify(settings));
 
+if (DEBUG_STATE) {
+  console.log("[STATE] Effective settings:", settings);
+}
+
 
 /*************************************************
- * SETTINGS UI
+ * SETTINGS UI SYNC
+ * (Read-only sync from state → UI)
  *************************************************/
 function loadSettingsUI() {
   document.getElementById("defaultIntervalsInput").value =
@@ -83,9 +131,13 @@ function loadSettingsUI() {
 
   document.getElementById("defaultDomainInput").value =
     settings.defaultDomain;
- 
 }
 
+
+/*************************************************
+ * PWA INSTALL HOOK
+ * (Global, unavoidable side-effect)
+ *************************************************/
 const installBtn = document.getElementById("installBtn");
 
 if (installBtn) {

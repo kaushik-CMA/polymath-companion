@@ -1,177 +1,299 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Polymath Companion</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="manifest.json">
-  
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <title>Polymath Companion</title>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
 </head>
 
 <body>
-<nav id="mainNav">
-  <button data-view="dashboard">Home</button>
-  <button data-view="calendar">Calendar</button>
-  <button data-view="library">Library</button>
-  <button data-view="settings">Settings</button>
-</nav>
-<div class="container">
-  <section id="view-dashboard"><h1>Polymath Companion</h1>
-    <div class="app-logo">
-  <img src="resources/logotransparent.png" alt="Polymath Companion logo">
-</div>  
-    <div class="subtitle"><i> A quiet place to stay in touch with ideas that matter - over time :)</i></div>
-    
-  <button id="addTopicBtn" type="button" style="margin: 5px;">Add Topic</button>
-  <br><br>
 
-  <div id="addTopicForm" style="display:none; margin:5px 5px 5px 5px;">
+  <!-- ===============================
+       MAIN NAVIGATION
+  ================================ -->
+  <nav id="mainNav">
+    <button data-view="dashboard">Home</button>
+    <button data-view="calendar">Calendar</button>
+    <button data-view="library">Library</button>
+    <button data-view="settings">Settings</button>
+  </nav>
 
-    <input id="topicTitleInput" placeholder="Topic title *" />
+  <main class="container">
 
-    <br>
+    <!-- ===============================
+         DASHBOARD / HOME
+    ================================ -->
+    <section id="view-dashboard">
 
-    <div>
-      <label>Intervals (days) *</label>
-      <div id="intervalChips" style="margin-top:8px;"></div>
-      <input id="intervalNumberInput" type="number" placeholder="Add interval (days)" />
-      <button id="addIntervalBtn" type="button">Add</button>
+      <h1>Polymath Companion</h1>
 
-    </div>
+      <div class="app-logo">
+        <img
+          src="resources/logotransparent.png"
+          alt="Polymath Companion logo"
+        />
+      </div>
 
-    <br><br>
+      <div class="subtitle">
+        <em>A quiet place to stay in touch with ideas that matter — over time :)</em>
+      </div>
 
-    <label>
-      Domain:
-      <input id="topicDomainInput" type="text" list="domainSuggestions" />
-    </label>
+      <!-- Add Topic -->
+      <button id="addTopicBtn" type="button">Add Topic</button>
 
-    <datalist id="domainSuggestions"></datalist>
+      <!-- Add Topic Form -->
+      <div id="addTopicForm" style="display:none;">
 
-    <label>
-      Start Date:
-      <input id="topicStartDateInput" type="date" />
-    </label>
+        <input
+          id="topicTitleInput"
+          placeholder="Topic title *"
+        />
 
-    <label>
-      Notes:
-      <textarea id="topicNotesInput" rows="3"></textarea>
-    </label>
+        <!-- Intervals -->
+        <div>
+          <label>Intervals (days) *</label>
+          <div id="intervalChips"></div>
 
+          <input
+            id="intervalNumberInput"
+            type="number"
+            placeholder="Add interval (days)"
+          />
+          <button id="addIntervalBtn" type="button">Add</button>
+        </div>
 
-    <div class="form-actions">
-      <button id="saveTopicBtn" type="button">Save</button>
-      <button id="cancelAddTopicBtn" type="button" class="secondary">Cancel</button>
-    </div>
+        <!-- Domain -->
+        <label>
+          Domain:
+          <input
+            id="topicDomainInput"
+            type="text"
+            list="domainSuggestions"
+          />
+        </label>
+        <datalist id="domainSuggestions"></datalist>
 
-  </div>
+        <!-- Start Date -->
+        <label>
+          Start Date:
+          <input id="topicStartDateInput" type="date" />
+        </label>
 
+        <!-- Notes -->
+        <label>
+          Notes:
+          <textarea id="topicNotesInput" rows="3"></textarea>
+        </label>
 
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button id="saveTopicBtn" type="button">Save</button>
+          <button
+            id="cancelAddTopicBtn"
+            type="button"
+            class="secondary"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
 
-  <h3>Overview</h3>
-  <ul id="dashboard"></ul>
-</section>
-  <section id="view-calendar"><h3>Calendar</h3>
+      <!-- Dashboard Overview -->
+      <h3>Overview</h3>
+      <ul id="dashboard"></ul>
 
-  <div id="calendar" class="section">
-    <div id="calendarHeader">
-      <button id="prevMonthBtn" type="button">◀</button>
-      <span id="calendarTitle"></span>
-      <button id="nextMonthBtn" type="button">▶</button>
-      <button id="todayBtn" class="secondary small" type="button">today</button>
-    </div>
-    <div id="calendarGrid"></div>
-  </div>
+    </section>
 
-  <h3 id="selectedDateHeader"></h3>
-  <ul id="selectedDateTopics"></ul>
-</section>
-  <section id="view-library">
-    
+    <!-- ===============================
+         CALENDAR
+    ================================ -->
+    <section id="view-calendar">
 
-  <div id="libraryControls" class="section library-controls">
-   <h3 style="display: inline-block;">Library</h3>
-   <button id="toggleFiltersBtn" class="secondary small" >
-  Show filters
-</button>  <button id="clearLibraryFilters" class="secondary small">
-  Clear filters & set defaults
-</button>
+      <h3>Calendar</h3>
 
-    
-    <div class="filters-body"><input type="text"id="librarySearchInput"placeholder="Search topics...">
-  <div class="status-filter">
-  <label><input type="radio" name="status" value="active" checked> Active</label>
-  <label><input type="radio" name="status" value="completed"> Completed</label>
-</div>
+      <div id="calendar" class="section">
 
+        <div id="calendarHeader">
+          <button id="prevMonthBtn" type="button">◀</button>
+          <span id="calendarTitle"></span>
+          <button id="nextMonthBtn" type="button">▶</button>
+          <button
+            id="todayBtn"
+            type="button"
+            class="secondary small"
+          >
+            today
+          </button>
+        </div>
 
+        <div id="calendarGrid"></div>
+      </div>
 
-    <select id="domainFilter">
-      <option value="">All domains</option>
-    </select>
+      <h3 id="selectedDateHeader"></h3>
+      <ul id="selectedDateTopics"></ul>
 
-    <select id="sortBy">
-      <option value="title">Sort by Title</option>
-      <option value="startDate">Sort by Start Date</option>
-    </select>
-    
-</div>
-  </div>
+    </section>
 
-  <ul id="libraryList"></ul>
-</section>
+    <!-- ===============================
+         LIBRARY
+    ================================ -->
+    <section id="view-library">
 
-  <section id="view-settings">
-    <div class="subtitle">All data stays on your device. No account required.</div>
-    <h3>Import / Export</h3>
+      <div id="libraryControls" class="section library-controls">
 
-  <button id="exportBtn" type="button"> Export data</button>
-  <div class="subtitle"><em>Note :</em> Import replaces the entire current data.</div>
-  <input type="file" id="importInput" accept=".json" />
+        <h3>Library</h3>
 
-  <h3>Set defaults</h3>
+        <!-- Filter Toggles -->
+        <button
+          id="toggleFiltersBtn"
+          class="secondary small"
+          type="button"
+        >
+          Show filters
+        </button>
 
-  <div id="settingsPanel" class="section">
-    <label>
-      Default Intervals (comma separated):
-      <input id="defaultIntervalsInput" type="text" />
-    </label>
+        <button
+          id="clearLibraryFilters"
+          class="secondary small"
+          type="button"
+        >
+          Clear filters & set defaults
+        </button>
 
-    <label>
-      Default Domain:
-      <input id="defaultDomainInput" type="text" />
-    </label>
+        <!-- Filters Body -->
+        <div class="filters-body">
 
-    <button id="saveSettingsBtn" type="button">Save Settings</button>
-  </div>
-  <br> <br><button id="installBtn" style="display:none">
-  Install App
-</button>
-<div class="section">
-  <h3>Credits</h3>
-  <p class="muted">
-    <a
-      href="https://www.flaticon.com/free-icons/continuous-learning"
-      title="continuous learning icons"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      Continuous learning icons created by dwicon – Flaticon
-    </a>
-  </p>
-</div>
-</section>
-</div>
+          <input
+            id="librarySearchInput"
+            type="text"
+            placeholder="Search topics..."
+          />
+
+          <!-- Status -->
+          <div class="status-filter">
+            <label>
+              <input
+                type="radio"
+                name="status"
+                value="active"
+                checked
+              />
+              Active
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="status"
+                value="completed"
+              />
+              Completed
+            </label>
+          </div>
+
+          <!-- Domain -->
+          <select id="domainFilter">
+            <option value="">All domains</option>
+          </select>
+
+          <!-- Sort -->
+          <select id="sortBy">
+            <option value="title">Sort by Title</option>
+            <option value="startDate">Sort by Start Date</option>
+          </select>
+
+        </div>
+      </div>
+
+      <ul id="libraryList"></ul>
+
+    </section>
+
+    <!-- ===============================
+         SETTINGS
+    ================================ -->
+    <section id="view-settings">
+
+      <div class="subtitle">
+        All data stays on your device. No account required.
+      </div>
+
+      <!-- Import / Export -->
+      <h3>Import / Export</h3>
+      <button id="exportBtn" type="button">Export data</button>
+
+      <div class="subtitle">
+        <em>Note:</em> Import replaces the entire current data.
+      </div>
+
+      <input
+        type="file"
+        id="importInput"
+        accept=".json"
+      />
+
+      <!-- Defaults -->
+      <h3>Set defaults</h3>
+      <div id="settingsPanel" class="section">
+
+        <label>
+          Default Intervals (comma separated):
+          <input id="defaultIntervalsInput" type="text" />
+        </label>
+
+        <label>
+          Default Domain:
+          <input id="defaultDomainInput" type="text" />
+        </label>
+
+        <button id="saveSettingsBtn" type="button">
+          Save Settings
+        </button>
+      </div>
+
+      <!-- Install -->
+      <button
+        id="installBtn"
+        type="button"
+        style="display:none"
+      >
+        Install App
+      </button>
+
+      <!-- Credits -->
+      <div class="section">
+        <h3>Credits</h3>
+        <p class="muted">
+          <a
+            href="https://www.flaticon.com/free-icons/continuous-learning"
+            title="continuous learning icons"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Continuous learning icons created by dwicon – Flaticon
+          </a>
+        </p>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ===============================
+       SCRIPTS
+  ================================ -->
   <script src="state.js"></script>
-<script src="intervals.js"></script>
-<script src="calendar.js"></script>
-<script src="library.js"></script>
-<script src="ui-events.js"></script>
-<script src="app.js"></script>
+  <script src="intervals.js"></script>
+  <script src="calendar.js"></script>
+  <script src="library.js"></script>
+  <script src="ui-events.js"></script>
+  <script src="app.js"></script>
 
 </body>
-
 </html>
