@@ -244,6 +244,8 @@ function renderDeleteButton(topic) {
     renderLibrary();
     renderCalendar();
     renderDashboard();
+    populateDomainFilter();
+    populateDomainSuggestions();
   });
 
   return btn;
