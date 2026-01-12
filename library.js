@@ -256,6 +256,8 @@ function renderEditButton(topic) {
     document.getElementById("topicStartDateInput").value = topic.startDate;
     document.getElementById("topicNotesInput").value = topic.notes ?? "";
 
+    syncSubDomainAvailability();
+
     form.dataset.editingId = topic.id;
   });
 

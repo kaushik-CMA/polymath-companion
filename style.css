@@ -407,3 +407,64 @@ button.small {
   opacity: 0.4;
   pointer-events: none;
 }
+
+/* ===============================
+   SETTINGS ITEMS
+================================ */
+
+/* ===============================
+   SETTINGS ITEMS
+================================ */
+
+.settings-item {
+  cursor: pointer;
+  user-select: none;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.settings-icon {
+  width: 22px;
+  height: 22px;
+  opacity: 0.85;
+}
+
+.settings-text {
+  font-size: 15px;
+}
+
+/* subtle hover (desktop-safe, mobile-neutral) */
+.settings-item:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+/* Icons */
+.icon {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+/* Danger zone styling */
+.danger-zone {
+  margin-top: 20px;
+}
+
+button.danger {
+  opacity: 0.85;
+}
+
+button.danger:hover {
+  opacity: 1;
+}
+
+/* Optional: slight warning tone */
+.danger-zone .subtitle {
+  font-size: 0.85rem;
+}
+

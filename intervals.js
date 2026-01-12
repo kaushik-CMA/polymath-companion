@@ -112,30 +112,95 @@ function saveIntervalHistory(history) {
 }
 
 // load recent interval helper function
-function updateIntervalHistory(intervals) {
+// intervals.js
+
+const MAX_HISTORY = 3;
+
+function normalizeIntervals(arr) {
+  return Array.from(new Set(arr))
+    .map(Number)
+    .filter(n => Number.isFinite(n) && n > 0)
+    .sort((a, b) => a - b);
+}
+
+function isSubset(sub, sup) {
+  return sub.every(v => sup.includes(v));
+}
+
+function isSameSet(a, b) {
+  return a.length === b.length && isSubset(a, b);
+}
+
+function dedupeHistory(history) {
+  const unique = [];
+  history.forEach(h => {
+    if (!unique.some(u => isSameSet(u, h))) {
+      unique.push(h);
+    }
+  });
+  return unique;
+}
+
+function trimHistory(history) {
+  return history.length > MAX_HISTORY
+    ? history.slice(history.length - MAX_HISTORY)
+    : history;
+}
+
+function updateIntervalHistory(newIntervals) {
+  const normalizedNew = normalizeIntervals(newIntervals);
+  if (normalizedNew.length === 0) return;
+
   let history =
-    JSON.parse(localStorage.getItem("intervalHistory"));
+    JSON.parse(localStorage.getItem("intervalHistory")) || [];
 
-  if (!Array.isArray(history)) history = [];
+  history = history
+    .map(normalizeIntervals)
+    .filter(h => h.length > 0);
 
-  // ignore exact duplicates
-  const exists = history.some(h =>
-    h.length === intervals.length &&
-    h.every((v, i) => v === intervals[i])
+  // exact match
+  const exactIndex = history.findIndex(h =>
+    isSameSet(h, normalizedNew)
   );
-  if (exists) return;
 
-  // cap length (example: 3)
-  if (history.length >= 3) history.shift();
+  if (exactIndex !== -1) {
+    history.splice(exactIndex, 1);
+    history.push(normalizedNew);
+    saveIntervalHistory(history);
+    return;
+  }
 
-  history.push([...intervals]);
+  // superset replaces subset
+  let replaced = false;
+  history = history.map(h => {
+    if (isSubset(h, normalizedNew)) {
+      replaced = true;
+      return normalizedNew;
+    }
+    return h;
+  });
 
+  if (replaced) {
+    history = dedupeHistory(history);
+    history = trimHistory(history);
+    saveIntervalHistory(history);
+    return;
+  }
+
+  // subset → ignore
+  if (history.some(h => isSubset(normalizedNew, h))) return;
+
+  history.push(normalizedNew);
+  history = trimHistory(history);
+  saveIntervalHistory(history);
+}
+
+function saveIntervalHistory(history) {
   localStorage.setItem(
     "intervalHistory",
     JSON.stringify(history)
   );
 }
-
 
 function renderIntervalHistory() {
   const container = document.getElementById("intervalHistory");

@@ -247,7 +247,32 @@
         All data stays on your device. No account required.
       </div>
 
-      <!-- Import / Export -->
+      <!-- Rate App -->
+<div class="section settings-item" id="rateApp">
+  <div class="settings-row">
+    <img
+      src="resources/rate-64.png"
+      alt="Rate the app"
+      class="settings-icon"
+    />
+    <span class="settings-text">Rate Polymath Companion</span>
+  </div>
+</div>
+
+      
+      <!-- Feedback -->
+<div class="section settings-item clickable" id="feedbackBtn">
+  <div class="settings-row">
+    <img
+      src="resources/feedback-64.png"
+      alt="Feedback"
+      class="settings-icon"
+    />
+    <span>Send feedback</span>
+  </div>
+</div>
+
+<!-- Import / Export -->
       <h3>Import / Export</h3>
       <button id="exportBtn" type="button">Export data</button>
 
@@ -262,19 +287,28 @@
       />
 
       <!-- Defaults -->
-      <h3>Set defaults</h3>
-      <div id="settingsPanel" class="section">
+<div id="settingsPanel" class="section">
 
-        <label>
-          Default Intervals (comma separated):
-          <input id="defaultIntervalsInput" type="text" />
-        </label>
+  <label for="defaultIntervalsInput">
+    <img
+      src="resources/default-24.png"
+      alt="Default"
+      class="settings-icon"
+    />
+       Default intervals (comma separated):
+  </label>
 
-        
-        <button id="saveSettingsBtn" type="button">
-          Save Settings
-        </button>
-      </div>
+  <input
+    id="defaultIntervalsInput"
+    type="text"
+    placeholder="e.g. 3,10,30,60"
+  />
+
+  <button id="saveSettingsBtn" type="button">
+    Save defaults
+  </button>
+
+</div>
 
       <!-- Install -->
       <button
@@ -284,6 +318,34 @@
       >
         Install App
       </button>
+
+      <!-- Load Sample Data -->
+<h3>Try with sample data</h3>
+
+<button id="loadSampleDataBtn" type="button" class="secondary">
+  <img src="resources/magicHat-24.png" alt="" />
+  Load sample data
+</button>
+
+<p class="muted">
+  Explore the app with example topics. This will replace current data.
+</p>
+
+      <!-- Clear All Data -->
+<div class="section danger-zone">
+  <button id="clearDataBtn" class="secondary danger">
+    <img
+      src="resources/clearData-24.png"
+      alt="Clear all data"
+      class="icon"
+    />
+    Clear all data
+  </button>
+
+  <div class="subtitle muted">
+    Permanently deletes all topics and settings from this device.
+  </div>
+</div>
 
       <!-- Credits -->
       <div class="section">

@@ -10,6 +10,37 @@
  *************************************************/
 
 /*************************************************
+ * SUB-DOMAIN AVAILABILITY SYNC
+ *************************************************/
+function syncSubDomainAvailability() {
+  const domainInput =
+    document.getElementById("topicDomainInput");
+  const subDomainInput =
+    document.getElementById("topicSubDomainInput");
+
+  if (!domainInput || !subDomainInput) return;
+
+  const domain = domainInput.value.trim();
+
+  if (!domain) {
+    subDomainInput.value = "";
+    subDomainInput.disabled = true;
+    subDomainInput.classList.add("disabled-input");
+
+    const datalist =
+      document.getElementById("subDomainSuggestions");
+    if (datalist) datalist.innerHTML = "";
+
+    return;
+  }
+
+  subDomainInput.disabled = false;
+  subDomainInput.classList.remove("disabled-input");
+
+  populateSubDomainSuggestions(domain);
+}
+
+/*************************************************
  * ADD / EDIT TOPIC FLOW
  *************************************************/
 
@@ -108,73 +139,73 @@ saveBtn.addEventListener("click", (e) => {
   const title = input.value.trim();
   if (!title || intervalValues.length === 0) return;
 
-  const domainInput =
+  const domain =
     document.getElementById("topicDomainInput").value.trim();
 
-  const subDomainInput =
-    document.getElementById("topicSubDomainInput").value.trim();
+  const subDomain =
+    domain
+      ? document.getElementById("topicSubDomainInput").value.trim() || null
+      : null;
 
-  const startDateInput =
+  const startDate =
     document.getElementById("topicStartDateInput").value;
 
-  const notesInput =
+  const notes =
     document.getElementById("topicNotesInput").value.trim();
 
   const today = new Date().toISOString().slice(0, 10);
   const editingId = form.dataset.editingId;
 
-  // 🔑 CAPTURE intervals BEFORE mutation
-  const savedIntervals = [...intervalValues];
+  const intervalsSnapshot = [...intervalValues]; // 🔑 CRITICAL
 
   if (editingId) {
     const index = topics.findIndex(t => t.id === editingId);
-
     topics[index] = {
       ...topics[index],
       title,
-      domain: domainInput || null,
-      subDomain: subDomainInput || null,
-      notes: notesInput || null,
-      startDate: startDateInput || today,
-      intervals: savedIntervals,
+      domain: domain || null,
+      subDomain,
+      notes: notes || null,
+      startDate: startDate || today,
+      intervals: intervalsSnapshot,
       updatedAt: today
     };
-
     delete form.dataset.editingId;
   } else {
     topics.push({
       id: crypto.randomUUID(),
       title,
-      domain: domainInput || null,
-      subDomain: subDomainInput || null,
-      notes: notesInput || null,
-      startDate: startDateInput || today,
-      intervals: savedIntervals,
+      domain: domain || null,
+      subDomain,
+      notes: notes || null,
+      startDate: startDate || today,
+      intervals: intervalsSnapshot,
       createdAt: today,
       updatedAt: today
     });
   }
 
-  // ===== PERSIST =====
+  // 🔒 Update history BEFORE clearing
+  updateIntervalHistory(intervalsSnapshot);
+
+  // persist topics
   localStorage.setItem("topics", JSON.stringify(topics));
 
-  // 🔑 UPDATE INTERVAL HISTORY (correct timing)
-  updateIntervalHistory(savedIntervals);
-  renderIntervalHistory();
-
-  // ===== CLEANUP UI STATE =====
+  // reset UI state
   intervalValues = [];
   renderIntervalChips();
   form.style.display = "none";
 
-  // ===== RE-RENDER =====
+  // re-render
   renderLibrary();
   renderCalendar();
   renderSelectedDate();
   renderDashboard();
   populateDomainFilter();
   populateDomainSuggestions();
+  renderIntervalHistory(); // UI-only function
 });
+
 
 /*************************************************
  * CALENDAR NAVIGATION
@@ -328,6 +359,7 @@ document.getElementById("importInput")
 
 document.getElementById("saveSettingsBtn")
   .addEventListener("click", () => {
+
     const intervalsRaw =
       document.getElementById("defaultIntervalsInput").value;
 
@@ -341,37 +373,94 @@ document.getElementById("saveSettingsBtn")
         ? parsedIntervals
         : defaultSettings.defaultIntervals;
 
-
     localStorage.setItem("settings", JSON.stringify(settings));
-    alert("Settings saved.");
+
+    alert("Default intervals saved.");
+  });
+  
+  
+  // feedback 
+  const feedbackBtn = document.getElementById("feedbackBtn");
+
+if (feedbackBtn) {
+  feedbackBtn.addEventListener("click", () => {
+    const subject = encodeURIComponent("Polymath Companion – Feedback");
+    const body = encodeURIComponent(
+      "Hi,\n\nI would like to share the following feedback:\n\n"
+    );
+
+    window.location.href =
+      `mailto:kaushikgauns@gmail.com?subject=${subject}&body=${body}`;
+  });
+}
+
+// rate on play store link
+const rateApp = document.getElementById("rateApp");
+
+if (rateApp) {
+  rateApp.addEventListener("click", () => {
+    alert("Thanks for using Polymath Companion 🙂");
+  });
+} 
+
+//clear data with confirmation box
+
+document.getElementById("clearDataBtn")
+  .addEventListener("click", () => {
+
+    const confirmed = confirm(
+      "This will permanently delete ALL topics and settings from this device.\n\nThis action cannot be undone.\n\nDo you want to continue?"
+    );
+
+    if (!confirmed) return;
+
+    // Clear storage
+    localStorage.removeItem("topics");
+    localStorage.removeItem("settings");
+    localStorage.removeItem("intervalHistory");
+
+    // Reset in-memory state
+    topics = [];
+    intervalValues = [];
+
+    // Re-render UI
+    renderDashboard();
+    renderLibrary();
+    renderCalendar();
+    renderSelectedDate();
+    populateDomainFilter();
+    populateDomainSuggestions();
+
+    alert("All data has been cleared.");
   });
 
-/*************************************************
- * sub domain availability
- *************************************************/
-//const domainInput = document.getElementById("topicDomainInput");
+document
+  .getElementById("loadSampleDataBtn")
+  .addEventListener("click", () => {
 
-domainInput.addEventListener("input", () => {
-  const subDomainInput =
-    document.getElementById("topicSubDomainInput");
-  if (!subDomainInput) return;
+    const ok = confirm(
+      "Load sample data?\n\nThis will replace your current topics."
+    );
 
-  const domain = domainInput.value.trim();
+    if (!ok) return;
 
-  if (!domain) {
-    subDomainInput.value = "";
-    subDomainInput.disabled = true;
-    subDomainInput.classList.add("disabled");
+    const sampleTopics = generateSampleTopics();
 
-    const datalist =
-      document.getElementById("subDomainSuggestions");
-    if (datalist) datalist.innerHTML = "";
+    topics = sampleTopics.map(normalizeTopic);
+    localStorage.setItem("topics", JSON.stringify(topics));
 
-    return;
-  }
+    // Reset transient state
+    intervalValues = [];
+    selectedDate = null;
+    form.style.display = "none";
 
-  subDomainInput.disabled = false;
-  subDomainInput.classList.remove("disabled");
+    // Re-render everything
+    renderLibrary();
+    renderCalendar();
+    renderSelectedDate();
+    renderDashboard();
+    populateDomainFilter();
+    populateDomainSuggestions();
 
-  populateSubDomainSuggestions(domain);
-});
+    alert("Sample data loaded. Explore freely ✨");
+  });
