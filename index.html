@@ -60,6 +60,7 @@
         <div>
           <label>Intervals (days) *</label>
           <div id="intervalChips"></div>
+         
 
           <input
             id="intervalNumberInput"
@@ -69,6 +70,8 @@
           <button id="addIntervalBtn" type="button">Add</button>
         </div>
 
+         <div id="intervalHistory" class="interval-history"></div>
+
         <!-- Domain -->
         <label>
           Domain:
@@ -76,10 +79,25 @@
             id="topicDomainInput"
             type="text"
             list="domainSuggestions"
+            placeholder="category"
           />
         </label>
         <datalist id="domainSuggestions"></datalist>
 
+        <!-- subDomain -->
+        <label>
+          Sub-domain:
+            <input
+              id="topicSubDomainInput"
+              type="text"
+              list="subDomainSuggestions"
+              placeholder="Sub-category"
+              disabled
+              class="disabled-input"
+            />
+            <datalist id="subDomainSuggestions"></datalist>
+
+            
         <!-- Start Date -->
         <label>
           Start Date:
@@ -204,10 +222,15 @@
 
           <!-- Sort -->
           <select id="sortBy">
-            <option value="title">Sort by Title</option>
-            <option value="startDate">Sort by Start Date</option>
-          </select>
+            <option value="title-asc">SortBy: Title (A–Z)</option>
+            <option value="title-desc">SortBy: Title (Z–A)</option>
 
+            <option value="date-asc">SortBy: Start date (Oldest first)</option>
+            <option value="date-desc">SortBy: Start date (Latest first)</option>
+
+            <option value="domain-asc">SortBy: Domain (A–Z)</option>
+            <option value="domain-desc">SortBy: Domain (Z–A)</option>
+          </select>
         </div>
       </div>
 
@@ -247,11 +270,7 @@
           <input id="defaultIntervalsInput" type="text" />
         </label>
 
-        <label>
-          Default Domain:
-          <input id="defaultDomainInput" type="text" />
-        </label>
-
+        
         <button id="saveSettingsBtn" type="button">
           Save Settings
         </button>

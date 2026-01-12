@@ -14,20 +14,74 @@
  *************************************************/
 
 // Open Add Topic form
+
 addBtn.addEventListener("click", () => {
+  // Show form
   form.style.display = "block";
 
-  // Load defaults
+  // ---------- Reset editing state ----------
+  delete form.dataset.editingId;
+
+  // ---------- Reset basic inputs ----------
+  input.value = "";
+  intervalNumberInput.value = "";
+  document.getElementById("topicNotesInput").value = "";
+
+  // ---------- Apply default intervals ----------
   intervalValues = [...settings.defaultIntervals];
   renderIntervalChips();
+  renderIntervalHistory();
 
-  document.getElementById("topicDomainInput").value =
-    settings.defaultDomain || "";
+  // ---------- Reset domain ----------
+  const domainInput =
+    document.getElementById("topicDomainInput");
+  domainInput.value = "";
 
+  // ---------- Reset sub-domain ----------
+  const subDomainInput =
+    document.getElementById("topicSubDomainInput");
+
+  subDomainInput.value = "";
+  subDomainInput.disabled = true;
+  subDomainInput.classList.add("disabled");
+
+  // Clear sub-domain suggestions
+  const subDomainDatalist =
+    document.getElementById("subDomainSuggestions");
+  if (subDomainDatalist) {
+    subDomainDatalist.innerHTML = "";
+  }
+
+  // ---------- Set default start date ----------
   document.getElementById("topicStartDateInput").value =
     new Date().toISOString().slice(0, 10);
+});
 
-  document.getElementById("topicNotesInput").value = "";
+
+domainInput.addEventListener("input", () => {
+  const subDomainInput =
+    document.getElementById("topicSubDomainInput");
+  if (!subDomainInput) return;
+
+  const domain = domainInput.value.trim();
+
+  if (!domain) {
+    subDomainInput.value = "";
+    subDomainInput.disabled = true;
+    subDomainInput.classList.add("disabled-input");
+
+    const datalist =
+      document.getElementById("subDomainSuggestions");
+    if (datalist) datalist.innerHTML = "";
+
+    return;
+  }
+
+  subDomainInput.disabled = false;
+  subDomainInput.classList.remove("disabled-input");
+
+  populateSubDomainSuggestions(domain);
+  renderIntervalHistory();
 });
 
 // Cancel Add Topic
@@ -57,6 +111,9 @@ saveBtn.addEventListener("click", (e) => {
   const domainInput =
     document.getElementById("topicDomainInput").value.trim();
 
+  const subDomainInput =
+    document.getElementById("topicSubDomainInput").value.trim();
+
   const startDateInput =
     document.getElementById("topicStartDateInput").value;
 
@@ -66,44 +123,51 @@ saveBtn.addEventListener("click", (e) => {
   const today = new Date().toISOString().slice(0, 10);
   const editingId = form.dataset.editingId;
 
+  // 🔑 CAPTURE intervals BEFORE mutation
+  const savedIntervals = [...intervalValues];
+
   if (editingId) {
-    // ----- EDIT EXISTING TOPIC -----
     const index = topics.findIndex(t => t.id === editingId);
 
     topics[index] = {
       ...topics[index],
       title,
       domain: domainInput || null,
+      subDomain: subDomainInput || null,
       notes: notesInput || null,
       startDate: startDateInput || today,
-      intervals: [...intervalValues],
+      intervals: savedIntervals,
       updatedAt: today
     };
 
     delete form.dataset.editingId;
-
   } else {
-    // ----- ADD NEW TOPIC -----
     topics.push({
       id: crypto.randomUUID(),
       title,
       domain: domainInput || null,
+      subDomain: subDomainInput || null,
       notes: notesInput || null,
       startDate: startDateInput || today,
-      intervals: [...intervalValues],
+      intervals: savedIntervals,
       createdAt: today,
       updatedAt: today
     });
   }
 
-  // ----- COMMON CLEANUP -----
+  // ===== PERSIST =====
   localStorage.setItem("topics", JSON.stringify(topics));
 
+  // 🔑 UPDATE INTERVAL HISTORY (correct timing)
+  updateIntervalHistory(savedIntervals);
+  renderIntervalHistory();
+
+  // ===== CLEANUP UI STATE =====
   intervalValues = [];
   renderIntervalChips();
   form.style.display = "none";
 
-  // ----- RE-RENDER AFFECTED VIEWS -----
+  // ===== RE-RENDER =====
   renderLibrary();
   renderCalendar();
   renderSelectedDate();
@@ -173,7 +237,7 @@ document
 
     document.getElementById("domainFilter").value = "";
     document.getElementById("librarySearchInput").value = "";
-    document.getElementById("sortBy").value = "title";
+    document.getElementById("sortBy").value = "title-asc";
 
     renderLibrary();
   });
@@ -255,7 +319,7 @@ document.getElementById("importInput")
       }
     };
 
-    reader.readAsText(file);l
+    reader.readAsText(file);
   });
 
   /*************************************************
@@ -277,9 +341,37 @@ document.getElementById("saveSettingsBtn")
         ? parsedIntervals
         : defaultSettings.defaultIntervals;
 
-    settings.defaultDomain =
-      document.getElementById("defaultDomainInput").value.trim();
 
     localStorage.setItem("settings", JSON.stringify(settings));
     alert("Settings saved.");
   });
+
+/*************************************************
+ * sub domain availability
+ *************************************************/
+//const domainInput = document.getElementById("topicDomainInput");
+
+domainInput.addEventListener("input", () => {
+  const subDomainInput =
+    document.getElementById("topicSubDomainInput");
+  if (!subDomainInput) return;
+
+  const domain = domainInput.value.trim();
+
+  if (!domain) {
+    subDomainInput.value = "";
+    subDomainInput.disabled = true;
+    subDomainInput.classList.add("disabled");
+
+    const datalist =
+      document.getElementById("subDomainSuggestions");
+    if (datalist) datalist.innerHTML = "";
+
+    return;
+  }
+
+  subDomainInput.disabled = false;
+  subDomainInput.classList.remove("disabled");
+
+  populateSubDomainSuggestions(domain);
+});

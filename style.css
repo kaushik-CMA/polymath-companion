@@ -365,6 +365,10 @@ button.small {
 
 @media (max-width: 600px) {
 
+  select{
+    min-height: 44px; /* thumb friendly */
+  }
+
   nav {
     justify-content: space-between;
   }
@@ -381,4 +385,25 @@ button.small {
   .form-actions button {
     width: 100%;
   }
+}
+
+/* other changes*/
+
+.disabled-input {
+  opacity: 0.6;
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+
+.interval-history {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+  opacity: 0.9;
+}
+
+.interval-history.disabled {
+  opacity: 0.4;
+  pointer-events: none;
 }

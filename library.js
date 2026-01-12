@@ -70,11 +70,19 @@ function applyLibraryOverrides() {
 /*************************************************
  * FILTERING LOGIC
  *************************************************/
+function getDomainKey(topic) {
+  if (!topic.domain) return null;
+
+  return topic.subDomain
+    ? `${topic.domain}/ ${topic.subDomain}`
+    : topic.domain;
+}
 
 function applyDomainFilter(list) {
-  const domain = document.getElementById("domainFilter").value;
-  if (!domain) return list;
-  return list.filter(t => t.domain === domain);
+  const selectedKey = document.getElementById("domainFilter").value;
+  if (!selectedKey) return list;
+
+  return list.filter(t => getDomainKey(t) === selectedKey);
 }
 
 function applyStatusFilter(list) {
@@ -110,6 +118,7 @@ function getSearchText(topic) {
   return [
     topic.title,
     topic.domain,
+    topic.subDomain,
     topic.notes
   ]
     .filter(Boolean)
@@ -124,21 +133,43 @@ function getSearchText(topic) {
 function applySorting(list) {
   const sortBy = document.getElementById("sortBy").value;
 
-  if (sortBy === "title") {
-    return [...list].sort((a, b) =>
-      a.title.localeCompare(b.title)
-    );
-  }
+  const sorted = [...list]; // NEVER mutate input
 
-  if (sortBy === "startDate") {
-    return [...list].sort(
-      (a, b) => new Date(a.startDate) - new Date(b.startDate)
-    );
-  }
+  switch (sortBy) {
+    case "title-asc":
+      return sorted.sort((a, b) =>
+        a.title.localeCompare(b.title)
+      );
 
-  return list;
+    case "title-desc":
+      return sorted.sort((a, b) =>
+        b.title.localeCompare(a.title)
+      );
+
+    case "date-asc":
+      return sorted.sort((a, b) =>
+        new Date(a.startDate) - new Date(b.startDate)
+      );
+
+    case "date-desc":
+      return sorted.sort((a, b) =>
+        new Date(b.startDate) - new Date(a.startDate)
+      );
+
+    case "domain-asc":
+      return sorted.sort((a, b) =>
+        (a.domain ?? "").localeCompare(b.domain ?? "")
+      );
+
+    case "domain-desc":
+      return sorted.sort((a, b) =>
+        (b.domain ?? "").localeCompare(a.domain ?? "")
+      );
+
+    default:
+      return sorted;
+  }
 }
-
 /*************************************************
  * EMPTY STATE
  *************************************************/
@@ -196,7 +227,7 @@ function renderLibraryHeader(topic) {
 
   const meta = document.createElement("span");
   meta.textContent =
-    ` | ${topic.domain ?? "—"} | ${topic.startDate} | [${topic.intervals.join(", ")}]`;
+    ` [ ${topic.domain ?? "—"} | ${topic.subDomain ?? "—"}] ${topic.startDate} | [${topic.intervals.join(", ")}]`;
   meta.style.opacity = "0.7";
 
   header.appendChild(title);
@@ -221,6 +252,7 @@ function renderEditButton(topic) {
     renderIntervalChips();
 
     document.getElementById("topicDomainInput").value = topic.domain ?? "";
+    document.getElementById("topicSubDomainInput").value = topic.subDomain ?? "";
     document.getElementById("topicStartDateInput").value = topic.startDate;
     document.getElementById("topicNotesInput").value = topic.notes ?? "";
 
@@ -246,6 +278,7 @@ function renderDeleteButton(topic) {
     renderDashboard();
     populateDomainFilter();
     populateDomainSuggestions();
+    populateSubDomainSuggestions()
   });
 
   return btn;
@@ -283,27 +316,64 @@ function renderNotesToggle(topic) {
 
 function populateDomainFilter() {
   const select = document.getElementById("domainFilter");
-  const domains = getUniqueDomains();
+
+  const keys = Array.from(
+    new Set(
+      topics
+        .map(getDomainKey)
+        .filter(Boolean)
+    )
+  ).sort((a, b) => a.localeCompare(b));
 
   select.innerHTML = `<option value="">All domains</option>`;
 
-  domains.forEach(d => {
+  keys.forEach(key => {
     const opt = document.createElement("option");
-    opt.value = d;
-    opt.textContent = d;
+    opt.value = key;
+    opt.textContent = key;
     select.appendChild(opt);
   });
 }
 
 function populateDomainSuggestions() {
   const datalist = document.getElementById("domainSuggestions");
-  const domains = getUniqueDomains();
+
+  const domains = [...new Set(
+    topics.map(t => t.domain).filter(Boolean)
+  )];
+
+  datalist.innerHTML = "";
+  domains.sort().forEach(d => {
+    const opt = document.createElement("option");
+    opt.value = d;
+    datalist.appendChild(opt);
+  });
+}
+
+function populateSubDomainSuggestions(domain) {
+  const datalist = document.getElementById("subDomainSuggestions");
+  if (!datalist) return;
 
   datalist.innerHTML = "";
 
-  domains.forEach(d => {
+  if (!domain) return;
+
+  const subDomains = Array.from(
+    new Set(
+      topics
+        .filter(t =>
+          t.domain === domain &&
+          t.subDomain &&
+          typeof t.subDomain === "string"
+        )
+        .map(t => t.subDomain.trim())
+        .filter(Boolean)
+    )
+  ).sort((a, b) => a.localeCompare(b));
+
+  subDomains.forEach(sd => {
     const opt = document.createElement("option");
-    opt.value = d;
+    opt.value = sd;
     datalist.appendChild(opt);
   });
 }

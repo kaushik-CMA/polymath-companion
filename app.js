@@ -1,3 +1,14 @@
+
+/*************************************************
+ * GLOBAL ERROR TRAP (TEMPORARY DEBUGGING)
+ *************************************************/
+const DEBUG = true;
+
+if (DEBUG) {
+  window.onerror = function (msg, src, line, col, err) {
+    console.log("GLOBAL ERROR:", msg, "line:", line);
+  };
+}
 /*************************************************
  * VIEW NAVIGATION
  *************************************************/

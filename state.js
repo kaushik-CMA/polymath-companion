@@ -19,6 +19,16 @@ const input = document.getElementById("topicTitleInput");
 const intervalNumberInput = document.getElementById("intervalNumberInput");
 const intervalChipsDiv = document.getElementById("intervalChips");
 const addIntervalBtn = document.getElementById("addIntervalBtn");
+const domainInput = document.getElementById("topicDomainInput");
+
+/* const domainValue =
+  document.getElementById("topicDomainInput").value.trim();
+
+const subDomainValue =
+  domainValue
+    ? document.getElementById("topicSubDomainInput").value.trim() || null
+    : null;
+
 
 
 /*************************************************
@@ -60,6 +70,7 @@ function normalizeTopic(topic) {
     title: topic.title,
 
     domain: topic.domain ?? null,
+    subDomain: topic.subDomain ?? null,
     notes: topic.notes ?? null,
 
     startDate: topic.startDate ?? today,
@@ -96,7 +107,7 @@ if (DEBUG_STATE) {
  */
 const defaultSettings = {
   defaultIntervals: [3, 10, 30],
-  defaultDomain: ""
+  
 };
 
 /**
@@ -129,9 +140,13 @@ function loadSettingsUI() {
   document.getElementById("defaultIntervalsInput").value =
     settings.defaultIntervals.join(",");
 
-  document.getElementById("defaultDomainInput").value =
-    settings.defaultDomain;
 }
+
+/*************************************************
+ * INTERVAL HISTORY CONFIG
+ *************************************************/
+const INTERVAL_HISTORY_KEY = "intervalHistory";
+const INTERVAL_HISTORY_LIMIT = 3; // ← easy to change later
 
 
 /*************************************************

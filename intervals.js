@@ -93,3 +93,85 @@ function addInterval() {
   // Always clear input after attempt
   intervalNumberInput.value = "";
 }
+
+// recent user intervals
+function loadIntervalHistory() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(INTERVAL_HISTORY_KEY));
+    return Array.isArray(raw) ? raw : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveIntervalHistory(history) {
+  localStorage.setItem(
+    INTERVAL_HISTORY_KEY,
+    JSON.stringify(history)
+  );
+}
+
+// load recent interval helper function
+function updateIntervalHistory(intervals) {
+  let history =
+    JSON.parse(localStorage.getItem("intervalHistory"));
+
+  if (!Array.isArray(history)) history = [];
+
+  // ignore exact duplicates
+  const exists = history.some(h =>
+    h.length === intervals.length &&
+    h.every((v, i) => v === intervals[i])
+  );
+  if (exists) return;
+
+  // cap length (example: 3)
+  if (history.length >= 3) history.shift();
+
+  history.push([...intervals]);
+
+  localStorage.setItem(
+    "intervalHistory",
+    JSON.stringify(history)
+  );
+}
+
+
+function renderIntervalHistory() {
+  const container = document.getElementById("intervalHistory");
+  if (!container) return;
+
+  let history = JSON.parse(localStorage.getItem("intervalHistory"));
+
+  // 🔑 HARD NORMALIZATION
+  if (!Array.isArray(history)) {
+    history = [];
+    localStorage.setItem(
+      "intervalHistory",
+      JSON.stringify(history)
+    );
+  }
+
+  container.innerHTML = "";
+  container.classList.remove("disabled");
+
+  if (history.length === 0) {
+    container.classList.add("disabled");
+    container.textContent =
+      "Recent interval sets will appear here";
+    return;
+  }
+
+  history.forEach(set => {
+    const chip = document.createElement("button");
+    chip.className = "interval-chip secondary";
+    chip.textContent = set.join(", ");
+
+    chip.onclick = () => {
+      intervalValues = [...set];
+      renderIntervalChips();
+    };
+
+    container.appendChild(chip);
+  });
+}

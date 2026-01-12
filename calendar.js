@@ -191,8 +191,13 @@ function renderSelectedDate() {
     domain.textContent = topic.domain ? ` [${topic.domain}]` : "";
     domain.className = "calendar-topic-domain";
 
+    const subDomain = document.createElement("span");
+    subDomain.textContent = topic.subDomain ? `> ${topic.subDomain}` : "";
+    subDomain.className = "calendar-topic-domain";
+
     li.appendChild(title);
     li.appendChild(domain);
+    li.appendChild(subDomain);
 
     const controls = document.createElement("div");
     controls.className = "calendar-controls";
