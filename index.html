@@ -231,28 +231,25 @@
          LIBRARY
     ================================ -->
     <section id="view-library">
+<div id="libraryControls" class="section library-controls">
 
-      <div id="libraryControls" class="section library-controls">
+  <div class="library-actions">
+    <button id="toggleFiltersBtn" class="secondary small">
+      Filters
+    </button>
 
-        <h3>Library</h3>
+    <button id="clearLibraryFilters" class="secondary small">
+      Reset
+    </button>
 
-        <!-- Filter Toggles -->
-        <button
-          id="toggleFiltersBtn"
-          class="secondary small"
-          type="button"
-        >
-          Show filters
-        </button>
+    <button id="expandAllBtn" class="secondary small">
+      Expand all
+    </button>
 
-        <button
-          id="clearLibraryFilters"
-          class="secondary small"
-          type="button"
-        >
-          Clear filters & set defaults
-        </button>
-
+    <button id="collapseAllBtn" class="secondary small">
+      Collapse all
+    </button>
+  </div>
         <!-- Filters Body -->
         <div class="filters-body">
 
@@ -300,11 +297,12 @@
             <option value="domain-desc">SortBy: Domain (Z–A)</option>
           </select>
         </div>
+
       </div>
 
       <ul id="libraryList"></ul>
        <li class="library-item" data-id="TOPIC_ID"></li>
-
+       
     </section>
 
     <!-- ===============================

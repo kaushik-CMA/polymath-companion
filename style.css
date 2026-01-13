@@ -10,6 +10,8 @@ body {
   margin: 0;
   font-family: "Georgia", "Times New Roman", serif;
   line-height: 1.7;
+  background: var(--bg);
+  color: var(--text);
 }
 
 input,
@@ -35,12 +37,8 @@ textarea {
 
 /* =========================================================
    TYPOGRAPHY
-========================================================= */
+========================================================= 
 
-body {
-  background: var(--bg);
-  color: var(--text);
-}
 
 h1 {
   font-size: 1.8rem;
@@ -61,14 +59,15 @@ h3 {
   margin: 20px 10px;
 }
 
-/* =========================================================
+ =========================================================
    LAYOUT WRAPPERS
 ========================================================= */
 
-main {
+main.container {
   max-width: 720px;
   margin: 0 auto;
   padding: 16px;
+  margin-bottom: 72px;
 }
 
 .section {
@@ -118,7 +117,6 @@ button {
   color: #fff;
   font-weight: 500;
   cursor: pointer;
-  font-family: inherit;
 }
 
 button:hover {
@@ -243,11 +241,23 @@ button.small {
 ========================================================= */
 
 .library-controls {
-  position: sticky;
-  top: 56px;
-  z-index: 10;
   background: var(--bg);
   padding-bottom: 8px;
+}
+
+/* Inline action row */
+.library-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+/* Make buttons compact */
+.library-actions button {
+  min-height: 36px;
+  padding: 6px 10px;
+  font-size: 13px;
 }
 
 .filters-body {
@@ -262,17 +272,12 @@ button.small {
   opacity: 1;
 }
 
-#libraryList li {
+.library-item {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 12px 14px;
+  padding: 10px 12px;
   margin-bottom: 10px;
-}
-
-#libraryList li.highlight {
-  background: #eef3ff;
-  border-left: 4px solid #5a8dee;
 }
 
 /* =========================================================
@@ -326,15 +331,6 @@ button.small {
 
   select{
     min-height: 44px; /* thumb friendly */
-  }
-
-  nav {
-    justify-content: space-between;
-  }
-
-  nav button {
-    flex: 1 1 auto;
-    text-align: center;
   }
 
   .form-actions {
@@ -438,6 +434,7 @@ button.danger:hover {
 
   display: flex;
   justify-content: space-around;
+  align-items: center;
 
   background: #f5f1e8;
   border-top: 1px solid #ddd;
@@ -445,24 +442,21 @@ button.danger:hover {
   z-index: 1000;
 }
 
-#bottomNav img{
-  width: 24px;
-  height: 24px;
-}
-
 #bottomNav button {
   background: none;
   border: none;
-  font-size: 0.75rem;
-  opacity: 0.6;
   min-width: 48px;
   min-height: 48px;
-  padding: 6px;
+  opacity: 0.6;
 }
 
 #bottomNav button.active {
   opacity: 1;
-  font-weight: 600;
+}
+
+#bottomNav img {
+  width: 24px;
+  height: 24px;
 }
 
 #todayNavBtn {
@@ -475,34 +469,6 @@ button.danger:hover {
   color: #2b2b2b;
 }
 
-.container {
-  margin-bottom: 70px;
-}
-
-.today-subtitle {
-  opacity: 0.6;
-  font-size: 0.9rem;
-  margin-bottom: 12px;
-}
-
-.revision-strip {
-  display: flex;
-  gap: 6px;
-  margin: 6px 0;
-}
-
-.revision-strip span {
-  font-size: 0.75rem;
-  padding: 2px 6px;
-  border-radius: 10px;
-  opacity: 0.4;
-}
-
-.revision-strip span.today {
-  background: #2b2b2b;
-  color: #fff;
-  opacity: 1;
-}
 
 /* note formatting*/
 .notes-editor {
@@ -579,32 +545,112 @@ button.danger:hover {
 }
 
 /* ===============================
-   LIBRARY VISIBILITY HELPERS
+  utility
 ================================ */
 
 .hidden {
   display: none;
 }
 
-.topic-details.collapsed {
-  display: none;
+.muted {
+  font-size: 13px;
+  opacity: 0.7;
 }
 
-.topic-notes {
-  margin-top: 6px;
-  padding: 6px;
-  background: #f9f6ef;
-  border-radius: 6px;
-  font-size: 0.9rem;
+
+/* ===============================
+   topic header (title + icons)
+================================ */
+.topic-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  cursor: pointer;
 }
 
-.topic-notes.hidden{
-  display: none;
+.topic-title {
+  font-weight: 600;
+  flex: 1;
+  line-height: 1.4;
+}
+
+
+/* ===============================
+  action icons (edit / delete / notes)
+================================ */
+
+.topic-actions {
+  display: flex;
+  gap: 6px;
 }
 
 .icon-btn {
   background: none;
   border: none;
+  padding: 4px;
   cursor: pointer;
-  font-size: 16px;
 }
+
+.icon-btn img {
+  width: 20px;
+  height: 20px;
+  opacity: 0.65;
+}
+
+.icon-btn:hover img {
+  opacity: 1;
+}
+
+.icon-btn.active {
+  background: rgba(123, 94, 59, 0.25);
+}
+/* ===============================
+details ( expand collapse)
+================================ */
+.topic-details {
+  margin-top: 8px;
+  font-size: 0.9rem;
+}
+
+.topic-details.collapsed {
+  display: none;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 4px 0;
+}
+
+.detail-row .label {
+  opacity: 0.6;
+}
+
+/* ===============================
+topic notes & status filter
+================================ */
+
+.topic-notes {
+  margin-top: 8px;
+  padding: 8px;
+  background: #f9f6ef;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.topic-notes.hidden {
+  display: none;
+}
+
+.status-filter {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin: 8px 0;
+}
+
+/* ===============================
+topic notes & status filter
+================================ */

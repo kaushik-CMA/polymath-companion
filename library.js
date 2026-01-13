@@ -167,12 +167,18 @@ function renderEmptyLibrary(list) {
 
 //icon button helper
 
-function createIconButton(label, type) {
+function createIconButton(src, alt, className) {
   const btn = document.createElement("button");
-  btn.className = `icon-btn ${type}`;
-  btn.textContent = label;
+  btn.className = `icon-btn ${className}`;
+
+  const img = document.createElement("img");
+  img.src = src;
+  img.alt = alt;
+
+  btn.appendChild(img);
   return btn;
 }
+
 function openEditTopic(topic) {
   showView("home");
   form.style.display = "block";
@@ -217,49 +223,51 @@ function renderLibraryItem(topic) {
   const actions = document.createElement("div");
   actions.className = "topic-actions";
 
-  // 👁 Notes toggle (always visible if notes exist)
-  let notesDiv = null;
+  /* ---------- NOTES TOGGLE ---------- */
   let notesBtn = null;
+  let notesDiv = null;
 
-  if (topic.notes && topic.notes.trim()) {
+  if (topic.notes) {
     notesBtn = document.createElement("button");
     notesBtn.className = "icon-btn notes-toggle";
     notesBtn.setAttribute("aria-label", "Toggle notes");
-    notesBtn.textContent = "👁";
+
+    const img = document.createElement("img");
+    img.src = "resources/eye-24.png";
+    img.alt = "Show notes";
+
+    notesBtn.appendChild(img);
     actions.appendChild(notesBtn);
   }
 
-  // ✏️ Edit (ALWAYS visible)
-const editBtn = document.createElement("button");
-editBtn.className = "icon-btn edit-topic";
-editBtn.setAttribute("aria-label", "Edit topic");
-editBtn.textContent = "✏️";
+  /* ---------- EDIT ---------- */
+  const editBtn = document.createElement("button");
+  editBtn.className = "icon-btn edit-topic";
+  editBtn.setAttribute("aria-label", "Edit topic");
 
-editBtn.addEventListener("click", e => {
-  e.stopPropagation();
-  openEditTopic(topic);
-});
+  const editImg = document.createElement("img");
+  editImg.src = "resources/edit-24.png";
+  editImg.alt = "Edit topic";
 
-actions.appendChild(editBtn);
+  editBtn.appendChild(editImg);
 
-  // ❌ Delete (always visible)
+  /* ---------- DELETE ---------- */
   const deleteBtn = document.createElement("button");
   deleteBtn.className = "icon-btn delete-topic";
   deleteBtn.setAttribute("aria-label", "Delete topic");
-  deleteBtn.textContent = "❌";
 
-  deleteBtn.addEventListener("click", e => {
-    e.stopPropagation();
-    deleteTopic(topic.id);
-  });
+  const deleteImg = document.createElement("img");
+  deleteImg.src = "resources/close-24.png";
+  deleteImg.alt = "Delete topic";
 
-  actions.appendChild(deleteBtn);
+  deleteBtn.appendChild(deleteImg);
 
+  actions.append(editBtn, deleteBtn);
   header.append(title, actions);
   li.appendChild(header);
 
   /* ===============================
-     DETAILS (collapsed by default)
+     DETAILS (collapsed)
   ================================ */
   const details = document.createElement("div");
   details.className = "topic-details collapsed";
@@ -274,27 +282,51 @@ actions.appendChild(editBtn);
   li.appendChild(details);
 
   /* ===============================
-     NOTES (hidden by default)
+     NOTES
   ================================ */
-  if (topic.notes && topic.notes.trim()) {
+  if (topic.notes) {
     notesDiv = document.createElement("div");
     notesDiv.className = "topic-notes hidden";
     notesDiv.textContent = topic.notes;
     li.appendChild(notesDiv);
-
-    notesBtn.addEventListener("click", e => {
-      e.stopPropagation();
-      const isHidden = notesDiv.classList.toggle("hidden");
-      notesBtn.textContent = isHidden ? "👁" : "🙈";
-    });
   }
 
   /* ===============================
-     HEADER CLICK → TOGGLE DETAILS
+     EVENT WIRING
   ================================ */
+
+  // Expand / collapse DETAILS (only header click, not icons)
   header.addEventListener("click", e => {
     if (e.target.closest(".icon-btn")) return;
     details.classList.toggle("collapsed");
+  });
+
+  // Toggle NOTES
+  if (notesBtn && notesDiv) {
+    notesBtn.addEventListener("click", e => {
+      e.stopPropagation();
+
+      const hidden = notesDiv.classList.toggle("hidden");
+
+      const img = notesBtn.querySelector("img");
+      img.src = hidden
+        ? "resources/eye-24.png"
+        : "resources/eyeClosed-24.png";
+
+      img.alt = hidden ? "Show notes" : "Hide notes";
+    });
+  }
+
+  // Edit
+  editBtn.addEventListener("click", e => {
+    e.stopPropagation();
+    openEditTopic(topic);
+  });
+
+  // Delete
+  deleteBtn.addEventListener("click", e => {
+    e.stopPropagation();
+    deleteTopic(topic.id);
   });
 
   return li;
@@ -393,3 +425,15 @@ function collapseFilters() {
   filtersExpanded = false;
   toggleBtn.textContent = "Show filters";
 }
+
+function expandAllTopics() {
+  document
+    .querySelectorAll(".topic-details.collapsed")
+    .forEach(el => el.classList.remove("collapsed"));
+}
+
+function collapseAllTopics() {
+  document
+    .querySelectorAll(".topic-details")
+    .forEach(el => el.classList.add("collapsed"));
+} 

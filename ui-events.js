@@ -473,3 +473,11 @@ document
   const cmd = btn.dataset.cmd;
   document.execCommand(cmd, false, null);
 });
+
+document
+  .getElementById("expandAllBtn")
+  ?.addEventListener("click", expandAllTopics);
+
+document
+  .getElementById("collapseAllBtn")
+  ?.addEventListener("click", collapseAllTopics);
