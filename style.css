@@ -503,3 +503,77 @@ button.danger:hover {
   color: #fff;
   opacity: 1;
 }
+
+/* note formatting*/
+.notes-editor {
+  margin-top: 6px;
+}
+
+.notes-input {
+  min-height: 80px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #fffdf8;
+  font-family: inherit;
+}
+
+.notes-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.notes-toolbar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.notes-toolbar button {
+  background: #e7e0d6;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px;
+}
+
+.notes-toolbar img {
+  width: 18px;
+  height: 18px;
+  filter: brightness(0.2); /* matches #2b2b2b */
+}
+
+.notes-editor {
+  min-height: 80px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #fffdf8;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.notes-editor:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: #ffffff;
+}
+
+/* fake placeholder */
+.notes-editor:empty::before {
+  content: attr(placeholder);
+  color: #999;
+}
+
+/* philosophy*/
+.home-philosophy {
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.home-philosophy p {
+  margin: 8px 0;
+}
+
+.home-philosophy .muted {
+  font-style: italic;
+}

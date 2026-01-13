@@ -254,7 +254,7 @@ function renderEditButton(topic) {
     document.getElementById("topicDomainInput").value = topic.domain ?? "";
     document.getElementById("topicSubDomainInput").value = topic.subDomain ?? "";
     document.getElementById("topicStartDateInput").value = topic.startDate;
-    document.getElementById("topicNotesInput").value = topic.notes ?? "";
+    document.getElementById("topicNotesInput").innerHTML= topic.notes ?? "";
 
     syncSubDomainAvailability();
     renderLibrary();
@@ -300,7 +300,7 @@ function renderNotesToggle(topic) {
   toggle.style.marginTop = "6px";
 
   const notesDiv = document.createElement("div");
-  notesDiv.textContent = topic.notes;
+  notesDiv.innerHTML = topic.notes;
   notesDiv.style.display = "none";
   notesDiv.style.opacity = "0.8";
   notesDiv.style.marginTop = "4px";

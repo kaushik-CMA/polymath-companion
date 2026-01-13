@@ -56,7 +56,7 @@ addBtn.addEventListener("click", () => {
   // ---------- Reset basic inputs ----------
   input.value = "";
   intervalNumberInput.value = "";
-  document.getElementById("topicNotesInput").value = "";
+  document.getElementById("topicNotesInput").innerHTML = "";
 
   // ---------- Apply default intervals ----------
   intervalValues = [...settings.defaultIntervals];
@@ -126,7 +126,7 @@ cancelBtn.addEventListener("click", () => {
   input.value = "";
   intervalNumberInput.value = "";
   document.getElementById("topicDomainInput").value = "";
-  document.getElementById("topicNotesInput").value = "";
+  document.getElementById("topicNotesInput").innerHTML = "";
 });
 
 /*************************************************
@@ -151,7 +151,7 @@ saveBtn.addEventListener("click", (e) => {
     document.getElementById("topicStartDateInput").value;
 
   const notes =
-    document.getElementById("topicNotesInput").value.trim();
+    document.getElementById("topicNotesInput").innerHTML.trim();
 
   const today = new Date().toISOString().slice(0, 10);
   const editingId = form.dataset.editingId;
@@ -464,3 +464,12 @@ document
 
     alert("Sample data loaded. Explore freely ✨");
   });
+
+  // notes formatting
+  document.addEventListener("click", e => {
+  const btn = e.target.closest("[data-cmd]");
+  if (!btn) return;
+
+  const cmd = btn.dataset.cmd;
+  document.execCommand(cmd, false, null);
+});

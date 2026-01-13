@@ -120,10 +120,35 @@
         </label>
 
         <!-- Notes -->
-        <label>
+        
           Notes:
-          <textarea id="topicNotesInput" rows="3"></textarea>
-        </label>
+          <div class="notes-editor">
+
+  <div class="notes-toolbar">
+  <button type="button" data-cmd="bold" aria-label="Bold">
+    <img src="resources/bold-24.png" />
+  </button>
+
+  <button type="button" data-cmd="italic" aria-label="Italic">
+    <img src="resources/italic-24.png" />
+  </button>
+
+  <button type="button" data-cmd="underline" aria-label="Underline">
+    <img src="resources/underline-24.png" />
+  </button>
+
+  <button type="button" data-cmd="removeFormat" aria-label="Clear formatting">
+    <img src="resources/erasor-24.png" />
+  </button>
+</div>
+  <div
+    id="topicNotesInput"
+    class="notes-input"
+    contenteditable="true"
+    placeholder="Notes (optional)"
+  ></div>
+
+</div>
 
         <!-- Form Actions -->
         <div class="form-actions">
@@ -137,6 +162,27 @@
           </button>
         </div>
       </div>
+
+      <div class="home-philosophy section">
+
+  <h3>Who are polymaths?</h3>
+
+  <p>
+    Polymaths are people who stay curious across fields — not all at once,
+    but over time.
+  </p>
+
+  <p>
+    They don’t chase everything.  
+    They return to what matters, again and again.
+  </p>
+
+  <p class="muted">
+    Polymath Companion is built to support that rhythm.
+  </p>
+
+</div>
+
     </section>
 
     <!-- ===============================
