@@ -200,10 +200,10 @@ saveBtn.addEventListener("click", (e) => {
   renderLibrary();
   renderCalendar();
   renderSelectedDate();
-  renderDashboard();
   populateDomainFilter();
   populateDomainSuggestions();
   renderIntervalHistory(); // UI-only function
+  renderToday();
 });
 
 
@@ -295,10 +295,13 @@ toggleBtn.addEventListener("click", () => {
  * MAIN NAVIGATION
  *************************************************/
 
-document.getElementById("mainNav").addEventListener("click", e => {
-  if (e.target.tagName !== "BUTTON") return;
-  showView(e.target.dataset.view);
+document.getElementById("bottomNav").addEventListener("click", e => {
+  const btn = e.target.closest("button");
+  if (!btn) return;
+
+  showView(btn.dataset.view);
 });
+
 
 /*************************************************
  * IMPORT / EXPORT
@@ -342,7 +345,6 @@ document.getElementById("importInput")
         populateDomainFilter();
         populateDomainSuggestions();
         renderLibrary();
-        renderDashboard();
 
         alert("Import successful.");
       } catch {
@@ -424,7 +426,6 @@ document.getElementById("clearDataBtn")
     intervalValues = [];
 
     // Re-render UI
-    renderDashboard();
     renderLibrary();
     renderCalendar();
     renderSelectedDate();
@@ -458,7 +459,6 @@ document
     renderLibrary();
     renderCalendar();
     renderSelectedDate();
-    renderDashboard();
     populateDomainFilter();
     populateDomainSuggestions();
 

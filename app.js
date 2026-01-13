@@ -2,7 +2,7 @@
 /*************************************************
  * GLOBAL ERROR TRAP (TEMPORARY DEBUGGING)
  *************************************************/
-const DEBUG = true;
+const DEBUG = false;
 
 if (DEBUG) {
   window.onerror = function (msg, src, line, col, err) {
@@ -13,21 +13,33 @@ if (DEBUG) {
  * VIEW NAVIGATION
  *************************************************/
 
-/**
- * Shows one view and hides all others.
- * Each <section> is treated as a screen.
- */
 function showView(viewName) {
   document.querySelectorAll("section").forEach(sec => {
     sec.style.display = "none";
   });
 
-  const activeView = document.getElementById(`view-${viewName}`);
-  if (activeView) {
-    activeView.style.display = "block";
+  const view = document.getElementById(`view-${viewName}`);
+  if (!view) {
+    console.warn("View not found:", viewName);
+    return;
   }
+
+  view.style.display = "block";
 }
 
+
+function setActiveNav(view) {
+  document
+    .querySelectorAll("#bottomNav button")
+    .forEach(btn => {
+      btn.classList.toggle(
+        "active",
+        btn.dataset.view === view
+      );
+    });
+}
+
+showView("home");
 
 /*************************************************
  * APPLICATION BOOTSTRAP
@@ -43,10 +55,10 @@ function initApp() {
   renderLibrary();
   renderCalendar();
   renderSelectedDate();
-  renderDashboard();
 
   // Default landing screen
-  showView("dashboard");
+  showView("home");
+  renderToday();
 }
 
 // Run immediately
@@ -88,3 +100,19 @@ window.addEventListener("beforeinstallprompt", e => {
     installBtn.style.display = "block";
   }
 });
+
+// todays date
+
+(function setTodayNavLabel() {
+  const el = document.getElementById("todayLabel");
+  if (!el) return;
+
+  const d = new Date();
+  const label = d.toLocaleDateString("en-IN", {
+    day: "numeric",
+    month: "short"
+  });
+
+  el.textContent = label; // e.g. "13 Jan"
+})();
+

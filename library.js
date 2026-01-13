@@ -244,7 +244,7 @@ function renderEditButton(topic) {
   btn.className = "secondary";
 
   btn.addEventListener("click", () => {
-    showView("dashboard");
+    showView("home");
     form.style.display = "block";
 
     input.value = topic.title;
@@ -257,6 +257,11 @@ function renderEditButton(topic) {
     document.getElementById("topicNotesInput").value = topic.notes ?? "";
 
     syncSubDomainAvailability();
+    renderLibrary();
+    renderCalendar();
+    populateDomainFilter();
+    populateDomainSuggestions();
+    renderToday();
 
     form.dataset.editingId = topic.id;
   });
@@ -277,10 +282,10 @@ function renderDeleteButton(topic) {
 
     renderLibrary();
     renderCalendar();
-    renderDashboard();
     populateDomainFilter();
     populateDomainSuggestions();
     populateSubDomainSuggestions()
+    renderToday();
   });
 
   return btn;

@@ -239,29 +239,67 @@ function jumpToCalendarDate(date) {
   renderSelectedDate();
 }
 
+// today main
 
-/*************************************************
- * DASHBOARD (SHOULD MOVE LATER)
- *************************************************/
+function renderToday() {
+  const header = document.getElementById("todayHeader");
+  const list = document.getElementById("todayList");
 
-function renderDashboard() {
-  const el = document.getElementById("dashboard");
+  if (!header || !list) return;
 
-  const todayStr = new Date().toDateString();
-  const all = getAllRevisions();
+  const today = new Date();
+  const todayStr = today.toDateString();
 
-  const todayCount = all.filter(r =>
-    r.date.toDateString() === todayStr
-  ).length;
+  header.textContent =
+    "Today · " +
+    today.toLocaleDateString(undefined, {
+      day: "numeric",
+      month: "short"
+    });
 
-  const upcomingCount = all.filter(r => {
-    const diff = (r.date - new Date()) / 86400000;
-    return diff > 0 && diff <= 7;
-  }).length;
+  list.innerHTML = "";
 
-  el.innerHTML = `
-    <li>Total topics: ${topics.length}</li>
-    <li>Revisions today: ${todayCount}</li>
-    <li>Upcoming (7 days): ${upcomingCount}</li>
-  `;
+  const topicsToday = getTopicsForDate(today);
+
+  if (topicsToday.length === 0) {
+    const li = document.createElement("li");
+    li.textContent =
+      "Nothing scheduled today. Review freely or add something new.";
+    li.style.opacity = "0.7";
+    list.appendChild(li);
+    return;
+  }
+
+  topicsToday.forEach(topic => {
+    const li = document.createElement("li");
+
+    const title = document.createElement("strong");
+    title.textContent = topic.title;
+
+    const meta = document.createElement("div");
+    meta.textContent =
+      `${topic.domain ?? ""}${topic.subDomain ? " › " + topic.subDomain : ""}`;
+    meta.style.opacity = "0.7";
+
+    const actions = document.createElement("div");
+
+    const calBtn = document.createElement("button");
+    calBtn.textContent = "View in calendar";
+    calBtn.className = "secondary small";
+    calBtn.onclick = () => jumpToCalendarDate(today);
+
+    const libBtn = document.createElement("button");
+    libBtn.textContent = "View in library";
+    libBtn.className = "secondary small";
+    libBtn.onclick = () => navigateToLibraryWithSearch(topic);
+
+    actions.appendChild(calBtn);
+    actions.appendChild(libBtn);
+
+    li.appendChild(title);
+    li.appendChild(meta);
+    li.appendChild(actions);
+
+    list.appendChild(li);
+  });
 }

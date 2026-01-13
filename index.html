@@ -18,19 +18,34 @@
   <!-- ===============================
        MAIN NAVIGATION
   ================================ -->
-  <nav id="mainNav">
-    <button data-view="dashboard">Home</button>
-    <button data-view="calendar">Calendar</button>
-    <button data-view="library">Library</button>
-    <button data-view="settings">Settings</button>
-  </nav>
+  <nav id="bottomNav">
+  <button data-view="home" aria-label="Home">
+    <img src="resources/home.png" />
+  </button>
+
+  <button data-view="calendar" aria-label="Calendar">
+    <img src="resources/calendar.png" />
+  </button>
+
+  <button data-view="today" aria-label="Today" id="todayNavBtn">
+    <span id="todayLabel"> </span>
+  </button>
+
+  <button data-view="library" aria-label="Library">
+    <img src="resources/library.png" />
+  </button>
+
+  <button data-view="settings" aria-label="Settings">
+    <img src="resources/settings.png" />
+  </button>
+</nav>
 
   <main class="container">
 
     <!-- ===============================
-         DASHBOARD / HOME
+         HOME
     ================================ -->
-    <section id="view-dashboard">
+    <section id="view-home">
 
       <h1>Polymath Companion</h1>
 
@@ -122,11 +137,6 @@
           </button>
         </div>
       </div>
-
-      <!-- Dashboard Overview -->
-      <h3>Overview</h3>
-      <ul id="dashboard"></ul>
-
     </section>
 
     <!-- ===============================
@@ -158,6 +168,18 @@
       <ul id="selectedDateTopics"></ul>
 
     </section>
+
+    <!-- ===============================
+         TODAY
+    ================================ -->
+
+      <section id="view-today">
+  <h3 id="todayHeader"></h3>
+  <ul id="todayList"></ul>
+</section>
+
+  
+
 
     <!-- ===============================
          LIBRARY
