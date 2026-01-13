@@ -577,3 +577,34 @@ button.danger:hover {
 .home-philosophy .muted {
   font-style: italic;
 }
+
+/* ===============================
+   LIBRARY VISIBILITY HELPERS
+================================ */
+
+.hidden {
+  display: none;
+}
+
+.topic-details.collapsed {
+  display: none;
+}
+
+.topic-notes {
+  margin-top: 6px;
+  padding: 6px;
+  background: #f9f6ef;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.topic-notes.hidden{
+  display: none;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}

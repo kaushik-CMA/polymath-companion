@@ -11,7 +11,9 @@ function navigateToLibraryWithSearch(topic) {
   });
 
   // Clear domain filter
-  document.getElementById("domainFilter").value = "";
+  const domainFilter=document.getElementById("domainFilter");
+  if(domainFilter) domainFilter.value = "";
+  renderLibrary();
 
   // Apply search
   const searchInput = document.getElementById("librarySearchInput");
@@ -27,8 +29,6 @@ function navigateToLibraryWithSearch(topic) {
  *************************************************/
 
 function renderLibrary() {
-
-  applyLibraryOverrides();
   
   const list = document.getElementById("libraryList");
   list.innerHTML = "";
@@ -52,23 +52,7 @@ function renderLibrary() {
 }
 
 /*************************************************
- * FILTER OVERRIDES (used by calendar redirects)
- *************************************************/
-
-function applyLibraryOverrides() {
-  if (!libraryStatusOverride) return;
-
-  document
-    .querySelectorAll('input[name="status"]')
-    .forEach(r => {
-      r.checked = r.value === libraryStatusOverride;
-    });
-
-  libraryStatusOverride = null; // consume once
-}
-
-/*************************************************
- * FILTERING LOGIC
+ * FITERING LOGIC
  *************************************************/
 function getDomainKey(topic) {
   if (!topic.domain) return null;
@@ -158,12 +142,12 @@ function applySorting(list) {
 
     case "domain-asc":
       return sorted.sort((a, b) =>
-        (a.domain ?? "").localeCompare(b.domain ?? "")
+        (getDomainKey(a) ?? "").localeCompare(getDomainKey(b) ?? "")
       );
 
     case "domain-desc":
       return sorted.sort((a, b) =>
-        (b.domain ?? "").localeCompare(a.domain ?? "")
+        (getDomainKey(b) ?? "").localeCompare(getDomainKey(a) ?? "")
       );
 
     default:
@@ -181,140 +165,155 @@ function renderEmptyLibrary(list) {
   list.appendChild(li);
 }
 
-/*************************************************
- * ITEM RENDERING
- *************************************************/
+//icon button helper
+
+function createIconButton(label, type) {
+  const btn = document.createElement("button");
+  btn.className = `icon-btn ${type}`;
+  btn.textContent = label;
+  return btn;
+}
+function openEditTopic(topic) {
+  showView("home");
+  form.style.display = "block";
+
+  input.value = topic.title;
+  intervalValues = [...topic.intervals];
+  renderIntervalChips();
+
+  document.getElementById("topicDomainInput").value = topic.domain ?? "";
+  document.getElementById("topicSubDomainInput").value = topic.subDomain ?? "";
+  document.getElementById("topicStartDateInput").value = topic.startDate;
+  document.getElementById("topicNotesInput").value = topic.notes ?? "";
+
+  form.dataset.editingId = topic.id;
+}
+
+function deleteTopic(id) {
+  if (!confirm("Delete this topic?")) return;
+
+  topics = topics.filter(t => t.id !== id);
+  localStorage.setItem("topics", JSON.stringify(topics));
+
+  renderLibrary();
+  renderCalendar();
+}
 
 function renderLibraryItem(topic) {
   const li = document.createElement("li");
+  li.className = "library-item";
+  li.dataset.id = topic.id;
 
-  highlightIfNeeded(li, topic);
+  /* ===============================
+     HEADER
+  ================================ */
+  const header = document.createElement("div");
+  header.className = "topic-header";
 
-  const header = renderLibraryHeader(topic);
+  const title = document.createElement("div");
+  title.className = "topic-title";
+  title.textContent = topic.title;
+
+  const actions = document.createElement("div");
+  actions.className = "topic-actions";
+
+  // 👁 Notes toggle (always visible if notes exist)
+  let notesDiv = null;
+  let notesBtn = null;
+
+  if (topic.notes && topic.notes.trim()) {
+    notesBtn = document.createElement("button");
+    notesBtn.className = "icon-btn notes-toggle";
+    notesBtn.setAttribute("aria-label", "Toggle notes");
+    notesBtn.textContent = "👁";
+    actions.appendChild(notesBtn);
+  }
+
+  // ✏️ Edit (ALWAYS visible)
+const editBtn = document.createElement("button");
+editBtn.className = "icon-btn edit-topic";
+editBtn.setAttribute("aria-label", "Edit topic");
+editBtn.textContent = "✏️";
+
+editBtn.addEventListener("click", e => {
+  e.stopPropagation();
+  openEditTopic(topic);
+});
+
+actions.appendChild(editBtn);
+
+  // ❌ Delete (always visible)
+  const deleteBtn = document.createElement("button");
+  deleteBtn.className = "icon-btn delete-topic";
+  deleteBtn.setAttribute("aria-label", "Delete topic");
+  deleteBtn.textContent = "❌";
+
+  deleteBtn.addEventListener("click", e => {
+    e.stopPropagation();
+    deleteTopic(topic.id);
+  });
+
+  actions.appendChild(deleteBtn);
+
+  header.append(title, actions);
   li.appendChild(header);
 
-  if (topic.notes) {
-    li.appendChild(renderNotesToggle(topic));
+  /* ===============================
+     DETAILS (collapsed by default)
+  ================================ */
+  const details = document.createElement("div");
+  details.className = "topic-details collapsed";
+
+  details.append(
+    createDetailRow("Category", topic.domain ?? "—"),
+    createDetailRow("Sub-category", topic.subDomain ?? "—"),
+    createDetailRow("Start date", topic.startDate),
+    createDetailRow("Intervals", topic.intervals.join(", "))
+  );
+
+  li.appendChild(details);
+
+  /* ===============================
+     NOTES (hidden by default)
+  ================================ */
+  if (topic.notes && topic.notes.trim()) {
+    notesDiv = document.createElement("div");
+    notesDiv.className = "topic-notes hidden";
+    notesDiv.textContent = topic.notes;
+    li.appendChild(notesDiv);
+
+    notesBtn.addEventListener("click", e => {
+      e.stopPropagation();
+      const isHidden = notesDiv.classList.toggle("hidden");
+      notesBtn.textContent = isHidden ? "👁" : "🙈";
+    });
   }
+
+  /* ===============================
+     HEADER CLICK → TOGGLE DETAILS
+  ================================ */
+  header.addEventListener("click", e => {
+    if (e.target.closest(".icon-btn")) return;
+    details.classList.toggle("collapsed");
+  });
 
   return li;
 }
 
-/*************************************************
- * ITEM HELPERS
- *************************************************/
+function createDetailRow(label, value) {
+  const row = document.createElement("div");
+  row.className = "detail-row";
 
-function highlightIfNeeded(li, topic) {
-  if (window.highlightTopicId !== topic.id) return;
+  const l = document.createElement("span");
+  l.className = "label";
+  l.textContent = label;
 
-  li.style.background = "#eef3ff";
-  li.setAttribute("tabindex", "-1");
-  li.scrollIntoView({ behavior: "smooth", block: "center" });
-  li.focus();
+  const v = document.createElement("span");
+  v.className = "value";
+  v.textContent = value;
 
-  window.highlightTopicId = null;
-}
-
-function renderLibraryHeader(topic) {
-  const header = document.createElement("div");
-  header.style.display = "flex";
-  header.style.flexWrap = "wrap";
-  header.style.gap = "6px";
-  header.style.alignItems = "center";
-
-  const title = document.createElement("strong");
-  title.textContent = topic.title;
-
-  const meta = document.createElement("span");
-  meta.textContent =
-    ` [ ${topic.domain ?? "—"} | ${topic.subDomain ?? "—"}] ${topic.startDate} | [${topic.intervals.join(", ")}]`;
-  meta.style.opacity = "0.7";
-
-  header.appendChild(title);
-  header.appendChild(meta);
-  header.appendChild(renderEditButton(topic));
-  header.appendChild(renderDeleteButton(topic));
-
-  return header;
-}
-
-function renderEditButton(topic) {
-  const btn = document.createElement("button");
-  btn.textContent = "Edit";
-  btn.className = "secondary";
-
-  btn.addEventListener("click", () => {
-    showView("home");
-    form.style.display = "block";
-
-    input.value = topic.title;
-    intervalValues = [...topic.intervals];
-    renderIntervalChips();
-
-    document.getElementById("topicDomainInput").value = topic.domain ?? "";
-    document.getElementById("topicSubDomainInput").value = topic.subDomain ?? "";
-    document.getElementById("topicStartDateInput").value = topic.startDate;
-    document.getElementById("topicNotesInput").innerHTML= topic.notes ?? "";
-
-    syncSubDomainAvailability();
-    renderLibrary();
-    renderCalendar();
-    populateDomainFilter();
-    populateDomainSuggestions();
-    renderToday();
-
-    form.dataset.editingId = topic.id;
-  });
-
-  return btn;
-}
-
-function renderDeleteButton(topic) {
-  const btn = document.createElement("button");
-  btn.textContent = "Delete";
-  btn.className = "danger";
-
-  btn.addEventListener("click", () => {
-    if (!confirm("Delete this topic?")) return;
-
-    topics = topics.filter(t => t.id !== topic.id);
-    localStorage.setItem("topics", JSON.stringify(topics));
-
-    renderLibrary();
-    renderCalendar();
-    populateDomainFilter();
-    populateDomainSuggestions();
-    populateSubDomainSuggestions()
-    renderToday();
-  });
-
-  return btn;
-}
-
-function renderNotesToggle(topic) {
-  const wrapper = document.createElement("div");
-
-  const toggle = document.createElement("button");
-  toggle.textContent = "View notes";
-  toggle.className = "secondary";
-  toggle.style.marginTop = "6px";
-
-  const notesDiv = document.createElement("div");
-  notesDiv.innerHTML = topic.notes;
-  notesDiv.style.display = "none";
-  notesDiv.style.opacity = "0.8";
-  notesDiv.style.marginTop = "4px";
-
-  toggle.addEventListener("click", () => {
-    const open = notesDiv.style.display === "none";
-    notesDiv.style.display = open ? "block" : "none";
-    toggle.textContent = open ? "Hide notes" : "View notes";
-  });
-
-  wrapper.appendChild(toggle);
-  wrapper.appendChild(notesDiv);
-
-  return wrapper;
+  row.append(l, v);
+  return row;
 }
 
 /*************************************************
@@ -383,12 +382,6 @@ function populateSubDomainSuggestions(domain) {
     opt.value = sd;
     datalist.appendChild(opt);
   });
-}
-
-function getUniqueDomains() {
-  return Array.from(
-    new Set(topics.map(t => t.domain).filter(Boolean))
-  );
 }
 
 /*************************************************
