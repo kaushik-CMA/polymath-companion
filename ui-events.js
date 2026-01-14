@@ -481,3 +481,62 @@ document
 document
   .getElementById("collapseAllBtn")
   ?.addEventListener("click", collapseAllTopics);
+
+  const notesEditor = document.getElementById("topicNotesInput");
+
+document.querySelectorAll(".notes-toolbar button[data-cmd]")
+  .forEach(btn => {
+    btn.addEventListener("click", e => {
+      e.preventDefault(); // IMPORTANT
+      e.stopPropagation();
+
+      const cmd = btn.dataset.cmd;
+
+      notesEditor.focus();
+
+      if (cmd === "clear") {
+        document.execCommand("removeFormat");
+        document.execCommand("unlink");
+        return;
+      }
+
+      document.execCommand(cmd, false, null);
+    });
+  });
+  
+
+// Copy notes
+document.getElementById("copyNotesBtn").addEventListener("click", () => {
+  const selection = window.getSelection();
+  const selectedText = selection ? selection.toString().trim() : "";
+
+  const textToCopy = selectedText
+    ? selectedText
+    : notesEditor.innerText;
+
+  navigator.clipboard.writeText(textToCopy);
+});
+  const notesHTML =
+  notesEditor.innerHTML.trim() || null;
+
+// today page
+
+document.querySelectorAll(".day-tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".day-tab").forEach(t =>
+      t.classList.remove("active")
+    );
+
+    tab.classList.add("active");
+
+    const day = tab.dataset.day;
+
+    document.getElementById("yesterdayList")
+      .classList.toggle("hidden", day !== "yesterday");
+
+    document.getElementById("tomorrowList")
+      .classList.toggle("hidden", day !== "tomorrow");
+  });
+});
+
+  

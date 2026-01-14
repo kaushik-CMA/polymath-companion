@@ -14,19 +14,20 @@ if (DEBUG) {
  *************************************************/
 
 function showView(viewName) {
+  // hide all views
   document.querySelectorAll("section").forEach(sec => {
     sec.style.display = "none";
   });
 
+  // show selected view
   const view = document.getElementById(`view-${viewName}`);
-  if (!view) {
-    console.warn("View not found:", viewName);
-    return;
+  if (view) view.style.display = "block";
+
+  // view-specific hooks
+  if (viewName === "today") {
+    renderTodayPage();
   }
-
-  view.style.display = "block";
 }
-
 
 function setActiveNav(view) {
   document
@@ -58,7 +59,6 @@ function initApp() {
 
   // Default landing screen
   showView("home");
-  renderToday();
 }
 
 // Run immediately

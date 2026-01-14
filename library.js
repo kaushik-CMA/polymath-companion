@@ -287,7 +287,7 @@ function renderLibraryItem(topic) {
   if (topic.notes) {
     notesDiv = document.createElement("div");
     notesDiv.className = "topic-notes hidden";
-    notesDiv.textContent = topic.notes;
+    notesDiv.innerHTML = topic.notes;
     li.appendChild(notesDiv);
   }
 

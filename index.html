@@ -49,6 +49,10 @@
 
       <h1>Polymath Companion</h1>
 
+      <div class="subtitle">
+        <em>A quiet place to stay in touch with ideas that matter — over time :)</em>
+      </div>
+
       <div class="app-logo">
         <img
           src="resources/logotransparent.png"
@@ -56,9 +60,28 @@
         />
       </div>
 
-      <div class="subtitle">
-        <em>A quiet place to stay in touch with ideas that matter — over time :)</em>
-      </div>
+      
+
+      <div class="home-philosophy section">
+
+  <h3>Who are polymaths?</h3>
+
+  <p>
+    Polymaths are people who stay curious across fields — not all at once,
+    but over time.
+  </p>
+
+  <p>
+    They don’t chase everything.  
+    They return to what matters, again and again.
+  </p>
+
+  <p class="muted">
+    Polymath Companion is built to support that rhythm.
+  </p>
+
+</div>
+
 
       <!-- Add Topic -->
       <button id="addTopicBtn" type="button">Add Topic</button>
@@ -121,10 +144,15 @@
 
         <!-- Notes -->
         
-          Notes:
-          <div class="notes-editor">
+          <label>Notes:</label>
+          <div
+  id="topicNotesInput"
+  class="notes-editor"
+  contenteditable="true"
+  placeholder="Paste or write short notes here…"
+></div>
 
-  <div class="notes-toolbar">
+<div class="notes-toolbar">
   <button type="button" data-cmd="bold" aria-label="Bold">
     <img src="resources/bold-24.png" />
   </button>
@@ -137,18 +165,16 @@
     <img src="resources/underline-24.png" />
   </button>
 
-  <button type="button" data-cmd="removeFormat" aria-label="Clear formatting">
+  <button type="button" data-cmd="clear" aria-label="Clear formatting">
     <img src="resources/erasor-24.png" />
   </button>
-</div>
-  <div
-    id="topicNotesInput"
-    class="notes-input"
-    contenteditable="true"
-    placeholder="Notes (optional)"
-  ></div>
 
+  <button type="button" id="copyNotesBtn" aria-label="Copy notes">
+    <img src="resources/copy-24.png" />
+  </button>
 </div>
+
+
 
         <!-- Form Actions -->
         <div class="form-actions">
@@ -163,26 +189,7 @@
         </div>
       </div>
 
-      <div class="home-philosophy section">
-
-  <h3>Who are polymaths?</h3>
-
-  <p>
-    Polymaths are people who stay curious across fields — not all at once,
-    but over time.
-  </p>
-
-  <p>
-    They don’t chase everything.  
-    They return to what matters, again and again.
-  </p>
-
-  <p class="muted">
-    Polymath Companion is built to support that rhythm.
-  </p>
-
-</div>
-
+      
     </section>
 
     <!-- ===============================
@@ -219,11 +226,28 @@
          TODAY
     ================================ -->
 
-      <section id="view-today">
-  <h3 id="todayHeader"></h3>
-  <ul id="todayList"></ul>
-</section>
+<section id="view-today">
+  <div class="today-header">
+  <h3>Today</h3>
+  <div class="today-date" id="todayDateLabel"></div>
+</div>
+<ul id="todayList" class="today-list"></ul>
+  <div class="day-switcher">
 
+  <div class="day-tabs">
+    <button class="day-tab active" data-day="yesterday">Yesterday</button>
+    <button class="day-tab" data-day="tomorrow">Tomorrow</button>
+  </div>
+
+  <div class="day-panel">
+
+    <ul id="yesterdayList" class="day-list"></ul>
+    <ul id="tomorrowList" class="day-list hidden"></ul>
+
+  </div>
+
+</div>
+</section>
   
 
 

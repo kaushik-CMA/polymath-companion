@@ -239,67 +239,167 @@ function jumpToCalendarDate(date) {
   renderSelectedDate();
 }
 
-// today main
 
-function renderToday() {
-  const header = document.getElementById("todayHeader");
-  const list = document.getElementById("todayList");
+/**************************
+ * today page implementation
+ **************************/
 
-  if (!header || !list) return;
-
+function renderTodayPage() {
   const today = new Date();
-  const todayStr = today.toDateString();
+  today.setHours(0,0,0,0);
 
-  header.textContent =
-    "Today · " +
-    today.toLocaleDateString(undefined, {
-      day: "numeric",
-      month: "short"
-    });
+  const dateLabel = document.getElementById("todayDateLabel");
+if (dateLabel) {
+  dateLabel.textContent = today.toLocaleDateString(undefined, {
+    day: "numeric",
+    month: "short"
+  });
+}
+  const todayList = document.getElementById("todayList");
+  if(!todayList) return;
+  const yesterdayList = document.getElementById("yesterdayList");
+  const tomorrowList = document.getElementById("tomorrowList");
 
-  list.innerHTML = "";
+  todayList.innerHTML = "";
+  yesterdayList.innerHTML = "";
+  tomorrowList.innerHTML = "";
 
   const topicsToday = getTopicsForDate(today);
 
-  if (topicsToday.length === 0) {
-    const li = document.createElement("li");
-    li.textContent =
-      "Nothing scheduled today. Review freely or add something new.";
-    li.style.opacity = "0.7";
-    list.appendChild(li);
-    return;
+topicsToday.forEach(topic => {
+  todayList.appendChild(renderTodayItem(topic));
+});
+
+  if (!todayList.children.length)
+    todayList.innerHTML = "<li class='muted'>No revisions today</li>";
+
+  renderAdjacentDays();
+
+}
+
+function renderTodayItem(topic) {
+  const li = document.createElement("li");
+  li.className = "today-topic";
+  li.classList.add("today-item");
+
+  /* ===============================
+     TITLE ROW (clickable)
+  ================================ */
+  const titleRow = document.createElement("div");
+  titleRow.className = "today-title";
+
+  const titleText = document.createElement("span");
+  titleText.className = "today-title-text";
+  titleText.textContent = topic.title;
+
+  const linkIcon = document.createElement("img");
+  linkIcon.src = "resources/finger-right-24.png";
+  linkIcon.alt = "View in library";
+  linkIcon.className = "today-link-icon";
+
+  titleRow.append(titleText, linkIcon);
+
+  titleRow.addEventListener("click", () => {
+    navigateToLibraryWithSearch(topic);
+  });
+
+  li.appendChild(titleRow);
+
+  /* ===============================
+     FUTURE REVISION DATES
+  ================================ */
+  const strip = document.createElement("div");
+  strip.className = "revision-strip";
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const futureDates = getSortedRevisionDates(topic)
+    .filter(d => d > today);
+
+  if (futureDates.length === 0) {
+    const span = document.createElement("span");
+    span.textContent = "Completed";
+    span.style.opacity = "0.5";
+    strip.appendChild(span);
+  } else {
+    futureDates.forEach(d => {
+      const span = document.createElement("span");
+      span.textContent = formatShortDate(d); // e.g. 13/01/26
+      strip.appendChild(span);
+    });
   }
 
-  topicsToday.forEach(topic => {
-    const li = document.createElement("li");
+  li.appendChild(strip);
 
-    const title = document.createElement("strong");
-    title.textContent = topic.title;
+  return li;
+}
 
-    const meta = document.createElement("div");
-    meta.textContent =
-      `${topic.domain ?? ""}${topic.subDomain ? " › " + topic.subDomain : ""}`;
-    meta.style.opacity = "0.7";
-
-    const actions = document.createElement("div");
-
-    const calBtn = document.createElement("button");
-    calBtn.textContent = "View in calendar";
-    calBtn.className = "secondary small";
-    calBtn.onclick = () => jumpToCalendarDate(today);
-
-    const libBtn = document.createElement("button");
-    libBtn.textContent = "View in library";
-    libBtn.className = "secondary small";
-    libBtn.onclick = () => navigateToLibraryWithSearch(topic);
-
-    actions.appendChild(calBtn);
-    actions.appendChild(libBtn);
-
-    li.appendChild(title);
-    li.appendChild(meta);
-    li.appendChild(actions);
-
-    list.appendChild(li);
+function formatShortDate(date) {
+  return date.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "2-digit"
   });
+}
+
+function renderSimpleItem(topic) {
+  const li = document.createElement("li");
+  li.textContent = topic.title;
+  li.className = "simple-link";
+  li.onclick = () => navigateToLibraryWithSearch(topic);
+  return li;
+}
+
+function renderAdjacentDays() {
+  const yesterdayList = document.getElementById("yesterdayList");
+  const tomorrowList = document.getElementById("tomorrowList");
+
+  yesterdayList.innerHTML = "";
+  tomorrowList.innerHTML = "";
+
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
+
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
+
+  topics.forEach(topic => {
+    const dates = getSortedRevisionDates(topic);
+
+    dates.forEach(d => {
+      d.setHours(0,0,0,0);
+
+      if (d.getTime() === yesterday.getTime()) {
+        yesterdayList.appendChild(createDayLink(topic));
+      }
+
+      if (d.getTime() === tomorrow.getTime()) {
+        tomorrowList.appendChild(createDayLink(topic));
+      }
+    });
+  });
+
+  if (!yesterdayList.children.length) {
+    yesterdayList.innerHTML = `<li class="muted">No revisions</li>`;
+  }
+
+  if (!tomorrowList.children.length) {
+    tomorrowList.innerHTML = `<li class="muted">No revisions</li>`;
+  }
+}
+
+function createDayLink(topic) {
+  const li = document.createElement("li");
+  li.className = "day-topic";
+  li.textContent = topic.title;
+
+  li.addEventListener("click", () => {
+    navigateToLibraryWithSearch(topic);
+  });
+
+  return li;
 }

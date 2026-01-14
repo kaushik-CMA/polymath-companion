@@ -37,7 +37,7 @@ textarea {
 
 /* =========================================================
    TYPOGRAPHY
-========================================================= 
+========================================================= */
 
 
 h1 {
@@ -59,7 +59,7 @@ h3 {
   margin: 20px 10px;
 }
 
- =========================================================
+ /*=========================================================
    LAYOUT WRAPPERS
 ========================================================= */
 
@@ -367,10 +367,6 @@ button.small {
    SETTINGS ITEMS
 ================================ */
 
-/* ===============================
-   SETTINGS ITEMS
-================================ */
-
 .settings-item {
   cursor: pointer;
   user-select: none;
@@ -471,24 +467,6 @@ button.danger:hover {
 
 
 /* note formatting*/
-.notes-editor {
-  margin-top: 6px;
-}
-
-.notes-input {
-  min-height: 80px;
-  padding: 8px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  background: #fffdf8;
-  font-family: inherit;
-}
-
-.notes-input:focus {
-  outline: none;
-  border-color: var(--accent);
-}
-
 .notes-toolbar {
   display: flex;
   gap: 8px;
@@ -505,7 +483,7 @@ button.danger:hover {
 .notes-toolbar img {
   width: 18px;
   height: 18px;
-  filter: brightness(0.2); /* matches #2b2b2b */
+  filter: brightness(0.2);
 }
 
 .notes-editor {
@@ -521,10 +499,9 @@ button.danger:hover {
 .notes-editor:focus {
   outline: none;
   border-color: var(--accent);
-  background: #ffffff;
 }
 
-/* fake placeholder */
+/* Fake placeholder */
 .notes-editor:empty::before {
   content: attr(placeholder);
   color: #999;
@@ -654,3 +631,212 @@ topic notes & status filter
 /* ===============================
 topic notes & status filter
 ================================ */
+
+/* =========================================================
+   TODAY PAGE
+========================================================= */
+
+#view-today {
+  padding-bottom: 12px;
+}
+
+/* Header */
+#todayHeader {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin: 8px 10px 4px;
+  color: #4a3b28;
+}
+
+.today-subtitle {
+  font-size: 0.9rem;
+  opacity: 0.65;
+  margin: 0 10px 14px;
+}
+
+/* List */
+#todayList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Topic card */
+.today-topic {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin: 0 5px 12px;
+}
+
+/* Title row */
+.today-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.today-title span {
+  text-decoration: underline;
+}
+
+.today-title img {
+  width: 16px;
+  height: 16px;
+  opacity: 0.7;
+}
+
+/* Revision dates strip */
+.today-revisions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.today-revisions span {
+  font-size: 0.75rem;
+  padding: 3px 8px;
+  border-radius: 12px;
+  background: #efe8dc;
+  opacity: 0.85;
+}
+
+/* Completed message */
+.today-completed {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  font-style: italic;
+  opacity: 0.6;
+}
+
+/* Yesterday / Tomorrow container */
+.today-adjacent {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border);
+}
+
+.today-adjacent a {
+  font-size: 0.85rem;
+  opacity: 0.7;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.today-adjacent a:hover {
+  opacity: 1;
+}
+
+.today-link-icon {
+  width: 16px;
+  height: 16px;
+  opacity: 0.65;
+}
+
+/* ===============================
+   YESTERDAY / TOMORROW SWITCHER
+================================ */
+
+.day-switcher {
+  margin-top: 20px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: #ede6db;
+}
+
+/* Tabs */
+.day-tabs {
+  display: flex;
+}
+
+.day-tab {
+  flex: 1;
+  background: #e2d8ca;
+  border: none;
+  padding: 10px;
+  font-size: 0.85rem;
+  opacity: 0.7;
+  transition: background 120ms ease, opacity 120ms ease;
+}
+
+.day-tab.active {
+  background: var(--card);
+  opacity: 1;
+  font-weight: 600;
+  border-bottom: none;
+}
+
+/* Panel */
+.day-panel {
+  background: var(--card);
+  padding: 10px 12px;
+}
+
+/* Lists */
+.day-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.day-list.hidden{
+  opacity: 0;
+  pointer-events: none;
+}
+
+.day-topic {
+  padding: 6px 0;
+  cursor: pointer;
+}
+
+.day-topic:hover {
+  text-decoration: underline;
+}
+
+.hidden {
+  display: none;
+}
+
+/* ===============================
+   TODAY HEADER
+================================ */
+
+.today-header {
+  margin-bottom: 12px;
+}
+
+.today-header h3 {
+  margin: 0;
+}
+
+.today-date {
+  font-size: 0.85rem;
+  opacity: 0.6;
+}
+
+/* ===============================
+   FADE-IN ANIMATION
+================================ */
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.today-item {
+  animation: fadeSlideIn 180ms ease-out;
+}
