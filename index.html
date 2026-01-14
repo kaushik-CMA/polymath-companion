@@ -58,26 +58,15 @@
           src="resources/logotransparent.png"
           alt="Polymath Companion logo"
         />
-      </div>
+      </div>  
 
       
 
-      <div class="home-philosophy section">
-
-  <h3>Who are polymaths?</h3>
-
+      <div class="home-philosophy muted section">
   <p>
-    Polymaths are people who stay curious across fields — not all at once,
-    but over time.
-  </p>
-
-  <p>
-    They don’t chase everything.  
-    They return to what matters, again and again.
-  </p>
-
-  <p class="muted">
-    Polymath Companion is built to support that rhythm.
+    Being a polymath is not the accumulation of facts.
+It is a deliberate practice — exploring ideas across disciplines, noticing their shared patterns, and revisiting the truths that bind them together.
+   
   </p>
 
 </div>
@@ -196,12 +185,12 @@
          CALENDAR
     ================================ -->
     <section id="view-calendar">
-
-      <h3>Calendar</h3>
-
-      <div id="calendar" class="section">
-
-        <div id="calendarHeader">
+      
+      <div id="calendarSticky">
+  <div id="calendarHeader">
+    <h3>Calendar</h3>
+    
+    <div id="calendarHeader">
           <button id="prevMonthBtn" type="button">◀</button>
           <span id="calendarTitle"></span>
           <button id="nextMonthBtn" type="button">▶</button>
@@ -213,8 +202,18 @@
             today
           </button>
         </div>
+      </div>
+  <div id="calendarGrid">
+  </div>
+</div>
 
-        <div id="calendarGrid"></div>
+      
+
+      <div id="calendar" class="section">
+
+        
+
+        
       </div>
 
       <h3 id="selectedDateHeader"></h3>
@@ -364,18 +363,35 @@
 </div>
 
 <!-- Import / Export -->
-      <h3>Import / Export</h3>
-      <button id="exportBtn" type="button">Export data</button>
+      <div class="section">
+  <h3>Import / Export</h3>
 
-      <div class="subtitle">
-        <em>Note:</em> Import replaces the entire current data.
-      </div>
+  <!-- Export -->
+  <div class="settings-item clickable" id="exportBtn">
+    <div class="settings-row">
+      <img src="resources/export-24.png" class="settings-icon" />
+      <span>Export data</span>
+    </div>
+  </div>
 
-      <input
-        type="file"
-        id="importInput"
-        accept=".json"
-      />
+  <!-- Import -->
+  <label class="settings-item clickable">
+    <div class="settings-row">
+      <img src="resources/import-24.png" class="settings-icon" />
+      <span>Import data</span>
+    </div>
+    <input
+      type="file"
+      id="importInput"
+      accept=".json"
+      hidden
+    />
+  </label>
+
+  <p class="muted">
+    Import replaces all existing data.
+  </p>
+</div>
 
       <!-- Defaults -->
 <div id="settingsPanel" class="section">
@@ -411,17 +427,20 @@
       </button>
 
       <!-- Load Sample Data -->
-<h3>Try with sample data</h3>
+<div class="section">
+  <h3>Try sample data</h3>
 
-<button id="loadSampleDataBtn" type="button" class="secondary">
-  <img src="resources/magicHat-24.png" alt="" />
-  Load sample data
-</button>
+  <div class="settings-item clickable" id="loadSampleDataBtn">
+    <button class="secondary settings-row">
+      <img src="resources/magicHat-24.png" class="settings-icon" />
+      Load sample topics
+    </button>
+  </div>
 
-<p class="muted">
-  Explore the app with example topics. This will replace current data.
-</p>
-
+  <p class="muted">
+    Replaces current data with example topics for exploration.
+  </p>
+</div>
       <!-- Clear All Data -->
 <div class="section danger-zone">
   <button id="clearDataBtn" class="secondary danger">
@@ -439,20 +458,55 @@
 </div>
 
       <!-- Credits -->
-      <div class="section">
-        <h3>Credits</h3>
-        <p class="muted">
-          <a
-            href="https://www.flaticon.com/free-icons/continuous-learning"
-            title="continuous learning icons"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Continuous learning icons created by dwicon – Flaticon
-          </a>
-        </p>
-      </div>
+      <!-- Credits -->
+<div class="section">
+  <div class="settings-row">
+    <img
+      src="resources/credits-24.png"
+      alt="Credits"
+      class="settings-icon"
+    />
+    <h3 style="margin: 0;">Icon credits</h3>
+  </div>
 
+  <p class="muted">
+    Icons used in this app are provided by Flaticon contributors:
+  </p>
+
+  <ul class="credits-list">
+    <li>dwicon — continuous learning icons</li>
+    <li>Freepik — friends, heart, gear, underline icons</li>
+    <li>NajmunNahar — emoji icons</li>
+    <li>bqlqn — delete icons</li>
+    <li>Prosymbols Premium — bold option icons</li>
+    <li>BW Designer — italic icons</li>
+    <li>Gregor Cresnar — paper icons</li>
+    <li>pictranoosa — paste icons</li>
+    <li>prinda895 — eraser icons</li>
+    <li>Aranagraphics — magic icons</li>
+    <li>meaicon — interval icons</li>
+    <li>Anggara — home page icons</li>
+    <li>RIkas Dzihab — ebook icons</li>
+    <li>Bharat Icons — calendar, save icons</li>
+    <li>Icongeek26 — pencil icons</li>
+    <li>Pixel perfect — close icons</li>
+    <li>Erix — hide icons</li>
+    <li>yaicon — eye icons</li>
+    <li>Md Tanvirul Haque — right hand icons</li>
+    <li>Fathema Khanom — file upload icons</li>
+  </ul>
+
+  <p class="muted">
+    Icons sourced from
+    <a
+      href="https://www.flaticon.com"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      Flaticon
+    </a>
+  </p>
+</div>  
     </section>
 
   </main>

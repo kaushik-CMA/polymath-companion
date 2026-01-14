@@ -178,51 +178,44 @@ function renderSelectedDate() {
   }
 
   topicsForDay.forEach(topic => {
-    const li = document.createElement("li");
+    const row = document.createElement("div");
+    row.className = "calendar-topic-row";
 
+    /* ---------- TITLE ---------- */
     const title = document.createElement("span");
-    title.textContent = topic.title;
     title.className = "calendar-topic-title";
+    title.textContent = topic.title;
     title.addEventListener("click", () => {
       navigateToLibraryWithSearch(topic);
     });
 
-    const domain = document.createElement("span");
-    domain.textContent = topic.domain ? ` [${topic.domain}]` : "";
-    domain.className = "calendar-topic-domain";
-
-    const subDomain = document.createElement("span");
-    subDomain.textContent = topic.subDomain ? `> ${topic.subDomain}` : "";
-    subDomain.className = "calendar-topic-domain";
-
-    li.appendChild(title);
-    li.appendChild(domain);
-    li.appendChild(subDomain);
-
+    /* ---------- CONTROLS ---------- */
     const controls = document.createElement("div");
-    controls.className = "calendar-controls";
+    controls.className = "calendar-inline-controls";
 
     const { prev, next } = getPrevNextRevision(topic, selectedDate);
 
-    if (prev) {
-      const btn = document.createElement("button");
-      btn.textContent = "Prev";
-      btn.className = "secondary small";
-      btn.onclick = () => jumpToCalendarDate(prev);
-      controls.appendChild(btn);
-    }
+    const prevBtn = document.createElement("button");
+    prevBtn.textContent = "◀";
+    prevBtn.className = "secondary small";
+    prevBtn.disabled = !prev;
+    prevBtn.addEventListener("click", e => {
+      e.stopPropagation();
+      if (prev) jumpToCalendarDate(prev);
+    });
 
-    if (next) {
-      const btn = document.createElement("button");
-      btn.textContent = "Next";
-      btn.className = "secondary small";
-      btn.onclick = () => jumpToCalendarDate(next);
-      controls.appendChild(btn);
-    }
+    const nextBtn = document.createElement("button");
+    nextBtn.textContent = "▶";
+    nextBtn.className = "secondary small";
+    nextBtn.disabled = !next;
+    nextBtn.addEventListener("click", e => {
+      e.stopPropagation();
+      if (next) jumpToCalendarDate(next);
+    });
 
-    if (controls.children.length) li.appendChild(controls);
-
-    list.appendChild(li);
+    controls.append(prevBtn, nextBtn);
+    row.append(title, controls);
+    list.appendChild(row);
   });
 }
 
