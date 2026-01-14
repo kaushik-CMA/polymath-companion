@@ -29,6 +29,8 @@ function navigateToLibraryWithSearch(topic) {
  *************************************************/
 
 function renderLibrary() {
+
+  
   
   const list = document.getElementById("libraryList");
   list.innerHTML = "";
@@ -39,6 +41,12 @@ function renderLibrary() {
   filtered = applyStatusFilter(filtered);
   filtered = applySearchFilter(filtered);
   filtered = applySorting(filtered);
+
+  const countEl = document.getElementById("libraryCount");
+if (countEl) {
+  countEl.textContent =
+    `Showing ${filtered.length} of ${topics.length} topics`;
+}
 
   if (filtered.length === 0) {
     renderEmptyLibrary(list);
@@ -190,9 +198,11 @@ function openEditTopic(topic) {
   document.getElementById("topicDomainInput").value = topic.domain ?? "";
   document.getElementById("topicSubDomainInput").value = topic.subDomain ?? "";
   document.getElementById("topicStartDateInput").value = topic.startDate;
-  document.getElementById("topicNotesInput").value = topic.notes ?? "";
+  document.getElementById("topicNotesInput").innerHTML = topic.notes ?? "";
 
   form.dataset.editingId = topic.id;
+
+  updateSubDomainState();
 }
 
 function deleteTopic(id) {

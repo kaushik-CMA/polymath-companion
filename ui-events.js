@@ -46,6 +46,12 @@ function syncSubDomainAvailability() {
 
 // Open Add Topic form
 
+function updateSubDomainState() {
+  const hasDomain = topicDomainInput.value.trim().length > 0;
+  topicSubDomainInput.disabled = !hasDomain;
+  topicSubDomainInput.classList.toggle("disabled-input", !hasDomain);
+}
+
 addBtn.addEventListener("click", () => {
   // Show form
   form.style.display = "block";
@@ -89,31 +95,7 @@ addBtn.addEventListener("click", () => {
 });
 
 
-domainInput.addEventListener("input", () => {
-  const subDomainInput =
-    document.getElementById("topicSubDomainInput");
-  if (!subDomainInput) return;
-
-  const domain = domainInput.value.trim();
-
-  if (!domain) {
-    subDomainInput.value = "";
-    subDomainInput.disabled = true;
-    subDomainInput.classList.add("disabled-input");
-
-    const datalist =
-      document.getElementById("subDomainSuggestions");
-    if (datalist) datalist.innerHTML = "";
-
-    return;
-  }
-
-  subDomainInput.disabled = false;
-  subDomainInput.classList.remove("disabled-input");
-
-  populateSubDomainSuggestions(domain);
-  renderIntervalHistory();
-});
+domainInput.addEventListener("input", updateSubDomainState)
 
 // Cancel Add Topic
 cancelBtn.addEventListener("click", () => {
@@ -433,36 +415,6 @@ document.getElementById("clearDataBtn")
     populateDomainSuggestions();
 
     alert("All data has been cleared.");
-  });
-
-document
-  .getElementById("loadSampleDataBtn")
-  .addEventListener("click", () => {
-
-    const ok = confirm(
-      "Load sample data?\n\nThis will replace your current topics."
-    );
-
-    if (!ok) return;
-
-    const sampleTopics = generateSampleTopics();
-
-    topics = sampleTopics.map(normalizeTopic);
-    localStorage.setItem("topics", JSON.stringify(topics));
-
-    // Reset transient state
-    intervalValues = [];
-    selectedDate = null;
-    form.style.display = "none";
-
-    // Re-render everything
-    renderLibrary();
-    renderCalendar();
-    renderSelectedDate();
-    populateDomainFilter();
-    populateDomainSuggestions();
-
-    alert("Sample data loaded. Explore freely ✨");
   });
 
   // notes formatting

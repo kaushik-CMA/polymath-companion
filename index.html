@@ -59,6 +59,7 @@
           alt="Polymath Companion logo"
         />
       </div>  
+      <br>
 
       
 
@@ -73,8 +74,10 @@ It is a deliberate practice — exploring ideas across disciplines, noticing the
 
 
       <!-- Add Topic -->
-      <button id="addTopicBtn" type="button">Add Topic</button>
-
+      <button id="addTopicBtn" class="add-topic-quiet">
+  <span class="plus">＋</span>
+  <span>Add a topic</span>
+</button>
       <!-- Add Topic Form -->
       <div id="addTopicForm" style="display:none;">
 
@@ -100,20 +103,22 @@ It is a deliberate practice — exploring ideas across disciplines, noticing the
          <div id="intervalHistory" class="interval-history"></div>
 
         <!-- Domain -->
-        <label>
+        <label for="topicDomainInput">
           Domain:
+          </label>
           <input
             id="topicDomainInput"
             type="text"
             list="domainSuggestions"
             placeholder="category"
           />
-        </label>
+        
         <datalist id="domainSuggestions"></datalist>
 
         <!-- subDomain -->
-        <label>
+        <label for="topicSubDomainInput">
           Sub-domain:
+        </label>
             <input
               id="topicSubDomainInput"
               type="text"
@@ -126,14 +131,15 @@ It is a deliberate practice — exploring ideas across disciplines, noticing the
 
             
         <!-- Start Date -->
-        <label>
+        <label for="topicStartDateInput">
           Start Date:
+          </label>
           <input id="topicStartDateInput" type="date" />
-        </label>
+        
 
         <!-- Notes -->
         
-          <label>Notes:</label>
+          <label for="topicNotesInput">Notes:</label>
           <div
   id="topicNotesInput"
   class="notes-editor"
@@ -266,11 +272,11 @@ It is a deliberate practice — exploring ideas across disciplines, noticing the
     </button>
 
     <button id="expandAllBtn" class="secondary small">
-      Expand all
+      <img src="resources/expand-24.png" alt="expand all">
     </button>
 
     <button id="collapseAllBtn" class="secondary small">
-      Collapse all
+      <img src="resources/collapse-24.png" alt="collapse all">
     </button>
   </div>
         <!-- Filters Body -->
@@ -320,6 +326,7 @@ It is a deliberate practice — exploring ideas across disciplines, noticing the
             <option value="domain-desc">SortBy: Domain (Z–A)</option>
           </select>
         </div>
+        <div id="libraryCount" class="muted"></div>
 
       </div>
 
@@ -519,7 +526,9 @@ It is a deliberate practice — exploring ideas across disciplines, noticing the
   <script src="calendar.js"></script>
   <script src="library.js"></script>
   <script src="ui-events.js"></script>
+   <script src="demo.js"></script>
   <script src="app.js"></script>
+ 
 
 </body>
 </html>

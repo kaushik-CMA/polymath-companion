@@ -58,7 +58,7 @@ function initApp() {
   renderSelectedDate();
 
   // Default landing screen
-  showView("home");
+  showView("today");
 }
 
 // Run immediately

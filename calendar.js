@@ -316,11 +316,18 @@ function renderTodayItem(topic) {
     span.style.opacity = "0.5";
     strip.appendChild(span);
   } else {
-    futureDates.forEach(d => {
-      const span = document.createElement("span");
-      span.textContent = formatShortDate(d); // e.g. 13/01/26
-      strip.appendChild(span);
-    });
+    futureDates.forEach((d, i) => {
+  const span = document.createElement("span");
+  span.textContent = formatShortDate(d);
+  strip.appendChild(span);
+
+  if (i < futureDates.length - 1) {
+    const sep = document.createElement("span");
+    sep.textContent = " → ";
+    sep.className = "revision-separator"; // optional
+    strip.appendChild(sep);
+  }
+});
   }
 
   li.appendChild(strip);
