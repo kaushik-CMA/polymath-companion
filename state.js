@@ -20,6 +20,9 @@ const intervalNumberInput = document.getElementById("intervalNumberInput");
 const intervalChipsDiv = document.getElementById("intervalChips");
 const addIntervalBtn = document.getElementById("addIntervalBtn");
 const domainInput = document.getElementById("topicDomainInput");
+const SubDomainInput = document.getElementById("topicSubDomainInput");
+const notesEditor = document.getElementById("topicNotesInput");
+const exportBtn = document.getElementById("exportBtn");
 
 /* const domainValue =
   document.getElementById("topicDomainInput").value.trim();

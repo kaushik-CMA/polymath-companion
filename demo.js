@@ -26,7 +26,7 @@ function loadDemoData() {
       domain: "Learning",
       subDomain: null,
       startDate: iso(new Date(today.getTime() - 3 * 86400000)),
-      intervals: [3, 7, 21],
+      intervals: [4, 7, 22],
       notes: `
 <b>Welcome.</b>
 
@@ -54,7 +54,7 @@ They exist only to remind you what you studied — not to replace your books.
       domain: "Reflection",
       subDomain: null,
       startDate: iso(new Date(today.getTime() - 7 * 86400000)),
-      intervals: [7, 14],
+      intervals: [8, 14],
       notes: `
 <i>This app improves only if it earns its place in your routine.</i>
 
@@ -99,7 +99,8 @@ You can re-activate a topic anytime by
       subDomain: "Memory",
       startDate: iso(new Date(today.getTime() - 30 * 86400000)),
       intervals: [7],
-      notes: null,
+      notes: `Revisiting ideas at increasing intervals forces your brain to reconstruct them,
+which leads to longer-lasting understanding than frequent cramming.`.trim(),
       createdAt: iso(today),
       updatedAt: iso(today)
     },
@@ -177,7 +178,7 @@ function generateFillerTopics(today) {
       domain: item[1],
       subDomain: item[2],
       startDate: iso(new Date(today.getTime() - offset * 86400000)),
-      intervals: i % 3 === 0 ? [7] : [3, 10, 30],
+      intervals: i % 3 === 0 ? [8, 15, 30, 60] : [3, 10, 30],
       notes: null,
       createdAt: iso(today),
       updatedAt: iso(today)

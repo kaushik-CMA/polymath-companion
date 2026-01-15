@@ -267,6 +267,7 @@ topicsToday.forEach(topic => {
     todayList.innerHTML = "<li class='muted'>No revisions today</li>";
 
   renderAdjacentDays();
+  initDayTabs();
 
 }
 
@@ -402,4 +403,25 @@ function createDayLink(topic) {
   });
 
   return li;
+}
+
+function initDayTabs() {
+  const tabs = document.querySelectorAll(".day-tab");
+  const yesterdayList = document.getElementById("yesterdayList");
+  const tomorrowList = document.getElementById("tomorrowList");
+
+  if (!tabs.length || !yesterdayList || !tomorrowList) return;
+
+  tabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+      // toggle active tab
+      tabs.forEach(t => t.classList.remove("active"));
+      tab.classList.add("active");
+
+      const day = tab.dataset.day;
+
+      yesterdayList.classList.toggle("hidden", day !== "yesterday");
+      tomorrowList.classList.toggle("hidden", day !== "tomorrow");
+    });
+  });
 }

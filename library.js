@@ -202,7 +202,7 @@ function openEditTopic(topic) {
 
   form.dataset.editingId = topic.id;
 
-  updateSubDomainState();
+  
 }
 
 function deleteTopic(id) {
@@ -213,6 +213,8 @@ function deleteTopic(id) {
 
   renderLibrary();
   renderCalendar();
+  renderSelectedDate();
+  renderTodayPage();
 }
 
 function renderLibraryItem(topic) {
@@ -399,18 +401,23 @@ function populateDomainSuggestions() {
 }
 
 function populateSubDomainSuggestions(domain) {
+  
   const datalist = document.getElementById("subDomainSuggestions");
   if (!datalist) return;
 
   datalist.innerHTML = "";
 
-  if (!domain) return;
+  if (!domain || typeof domain !== "string") return;
+
+  const normalizedDomain = domain.trim().toLowerCase();
 
   const subDomains = Array.from(
     new Set(
       topics
         .filter(t =>
-          t.domain === domain &&
+          t.domain &&
+          typeof t.domain === "string" &&
+          t.domain.trim().toLowerCase() === normalizedDomain &&
           t.subDomain &&
           typeof t.subDomain === "string"
         )
@@ -438,7 +445,7 @@ function collapseFilters() {
 
 function expandAllTopics() {
   document
-    .querySelectorAll(".topic-details.collapsed")
+    .querySelectorAll(".topic-details")
     .forEach(el => el.classList.remove("collapsed"));
 }
 
@@ -446,4 +453,4 @@ function collapseAllTopics() {
   document
     .querySelectorAll(".topic-details")
     .forEach(el => el.classList.add("collapsed"));
-} 
+}
