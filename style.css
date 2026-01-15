@@ -5,6 +5,7 @@
 * {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
 }
 
 body {
@@ -13,6 +14,10 @@ body {
   line-height: 1.7;
   background: var(--bg);
   color: var(--text);
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
 }
 
 input,
@@ -345,11 +350,6 @@ button.small {
   margin-bottom: 10px;
 }
 
-.library-item:active,
-.topic-header:active {
-  background: rgba(123,94,59,0.08);
- 
-}
 
 .library-item:empty{
   display: none;
@@ -575,7 +575,17 @@ button.danger:hover {
   background: #fffdf8;
   font-family: inherit;
   font-size: 14px;
+  -webkit-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
 }
+
+.notes-editor * {
+  -webkit-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
 
 .notes-editor:focus {
   outline: none;
@@ -759,19 +769,20 @@ topic notes & status filter
 .today-title {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 6px;
   font-weight: 500;
   cursor: pointer;
 }
 
 .today-title span {
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 .today-title img {
-  width: 16px;
-  height: 16px;
-  opacity: 0.7;
+  width: 35px;
+  height: 35px;
+  opacity: 0.9;
 }
 
 /* Revision dates strip */
@@ -811,11 +822,10 @@ topic notes & status filter
 .today-adjacent a {
   font-size: 0.85rem;
   opacity: 0.7;
-  text-decoration: underline;
   cursor: pointer;
 }
 
-.today-adjacent a:hover {
+.today-adjacent a:hover, {
   opacity: 1;
 }
 
@@ -883,7 +893,7 @@ topic notes & status filter
   cursor: pointer;
 }
 
-.day-topic:hover {
+.day-topic:hover , .today-title span:hover{
   text-decoration: underline;
 }
 
