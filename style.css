@@ -207,8 +207,12 @@ button.small {
   padding-bottom: 6px;
 }
 
+#view-calendar{
+  padding-top: 4px;
+}
+
 .calendar-topic-scroll {
-  max-height: calc(100vh - 360px);
+  max-height: calc(100vh - 320px);
   overflow-y: auto;
 }
 
@@ -216,6 +220,7 @@ button.small {
   position: sticky;
   top: 56px;
   z-index: 900;
+  padding: 4px;
 
   display: flex;
   align-items: center;
@@ -239,7 +244,7 @@ button.small {
 
 .calendar-day {
   text-align: center;
-  padding: 6px 0;
+  padding: 4px 0;
   border-radius: 6px;
   cursor: pointer;
 }
@@ -258,7 +263,7 @@ button.small {
   height: 6px;
   background: var(--accent);
   border-radius: 50%;
-  margin: 4px auto 0;
+  margin: 2px auto 0;
 }
 
 .calendar-topic-title {
@@ -273,7 +278,7 @@ button.small {
   justify-content: space-between;
   gap: 8px;
 
-  padding: 8px 4px;
+  padding: 8px 0px;
   border-bottom: 1px dashed var(--border);
 }
 
@@ -344,6 +349,10 @@ button.small {
 .topic-header:active {
   background: rgba(123,94,59,0.08);
  
+}
+
+.library-item:empty{
+  display: none;
 }
 
 .library-count {
