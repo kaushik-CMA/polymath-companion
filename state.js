@@ -154,25 +154,3 @@ const INTERVAL_HISTORY_LIMIT = 3; // ← easy to change later
 function getIntervalHistory() {
   return JSON.parse(localStorage.getItem("intervalHistory")) || [];
 }
-
-
-/*************************************************
- * PWA INSTALL HOOK
- * (Global, unavoidable side-effect)
- *************************************************/
-const installBtn = document.getElementById("installBtn");
-
-if (installBtn) {
-  installBtn.addEventListener("click", async () => {
-    if (!deferredPrompt) return;
-
-    deferredPrompt.prompt();
-    await deferredPrompt.userChoice;
-
-    deferredPrompt = null;
-    installBtn.style.display = "none";
-  });
-}
-
- // load sample data
-

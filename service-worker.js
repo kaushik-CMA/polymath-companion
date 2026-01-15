@@ -1,4 +1,4 @@
-const CACHE_NAME = "polymath-companion-v5";
+const CACHE_NAME = "polymath-companion-v5.1";
 
 const ASSETS_TO_CACHE = [
   "./",

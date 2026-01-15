@@ -83,24 +83,6 @@ if ("serviceWorker" in navigator) {
 }
 
 
-/*************************************************
- * PWA: INSTALL EXPERIENCE
- *************************************************/
-
-// Browser-provided install prompt (deferred)
-let deferredPrompt = null;
-
-// Capture install prompt and show custom button
-window.addEventListener("beforeinstallprompt", e => {
-  e.preventDefault();
-  deferredPrompt = e;
-
-  const installBtn = document.getElementById("installBtn");
-  if (installBtn) {
-    installBtn.style.display = "block";
-  }
-});
-
 // todays date
 
 (function setTodayNavLabel() {
