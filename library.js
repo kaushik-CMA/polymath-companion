@@ -71,11 +71,18 @@ function getDomainKey(topic) {
 }
 
 function applyDomainFilter(list) {
-  const selectedKey = document.getElementById("domainFilter").value;
-  if (!selectedKey) return list;
+  const selected = document.getElementById("domainFilter").value;
+  if (!selected) return list;
 
-  return list.filter(t => getDomainKey(t) === selectedKey);
+  // If user selected only a domain (no slash)
+  if (!selected.includes("/")) {
+    return list.filter(t => t.domain === selected);
+  }
+
+  // If user selected domain + subdomain
+  return list.filter(t => getDomainKey(t) === selected);
 }
+
 
 function applyStatusFilter(list) {
   const status =
